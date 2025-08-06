@@ -1,0 +1,11 @@
+#ifndef TIMER_RESOURCE_H
+#define TIMER_RESOURCE_H
+
+#define IDD_INPUTDLG         101
+#define IDC_INPUTDLG_STATIC  1001
+#define IDC_INPUTDLG_EDIT    1002
+#define IDC_INPUTDLG_OK      1003
+#define IDC_INPUTDLG_CANCEL  1004
+#define IDI_ICON1            201
+
+#endif

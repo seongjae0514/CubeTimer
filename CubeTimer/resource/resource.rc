@@ -1,0 +1,27 @@
+// CubeTimer main resource file
+
+/////////////////////////////////////////////////////////////////////////////
+// Includes
+//
+#include <Windows.h>
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+// Icon
+//
+IDI_ICON1 ICON "CubeTimer.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+// Dialog
+//
+IDD_INPUTDLG DIALOGEX 0, 0, 187, 61
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Input"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Enter your input:",IDC_INPUTDLG_STATIC,7,7,172,8
+    EDITTEXT        IDC_INPUTDLG_EDIT,7,20,172,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDC_INPUTDLG_OK,74,40,50,14
+    PUSHBUTTON      "Cancel",IDC_INPUTDLG_CANCEL,130,40,50,14
+END
+
