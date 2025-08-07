@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Dialog.c" />
     <ClCompile Include="src\IoHandler.c" />
     <ClCompile Include="src\Main.c" />
     <ClCompile Include="src\Message.c" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="include\Debug.h" />
     <ClInclude Include="include\Defs.h" />
+    <ClInclude Include="include\Dialog.h" />
     <ClInclude Include="include\IoHandler.h" />
     <ClInclude Include="include\Message.h" />
     <ClInclude Include="include\Record.h" />

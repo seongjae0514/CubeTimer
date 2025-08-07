@@ -7,6 +7,7 @@
 #include "Scramble.h"
 #include "Record.h"
 #include "IoHandler.h"
+#include "Dialog.h"
 
 INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
                     _In_opt_ HINSTANCE hPrevInstance,
@@ -23,12 +24,16 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
 
     /* 모듈 초기화 */
 
+	INITIALIZE_DEBUG_STREAM();
+
     TmInitializeTimer();
     RdInitializeRenderer(60, 18);
     IoInitializeIoHandler();
     ScInitializeScramble();
     RcInitializeRecordTable();
+	DlInitializeDialog();
 
+    // 첫 번째 스크램블 생성
     ScGenerateScramble(SC_CUBE_33, 15);
 
     /* 메시지 루프 시작 */

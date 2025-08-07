@@ -11,8 +11,9 @@
 #ifdef _DEBUG
 #define INITIALIZE_DEBUG_STREAM() \
         do { \
+            FILE* newStream; \
             AllocConsole(); \
-            freopen("CONOUT$", "w", stdout); \
+            freopen_s(&newStream, "CONOUT$", "w", stdout); \
         } while(0)
 
 #define PRINT_DEBUG_STRING(args, ...) printf(args, ##__VA_ARGS__)
