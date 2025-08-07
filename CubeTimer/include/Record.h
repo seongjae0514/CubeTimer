@@ -72,4 +72,9 @@ extern BOOL RcPlusTwoCurrentNodeRecord(VOID);
  */
 extern MillisecTime RcGetBestRecord(VOID);
 
+/**
+ * @brief 현재 노드가 +2 되어있는지 여부를 반환합니다.
+ */
+extern BOOL RcIsCurrentNodePlusTwo(VOID);
+
 #endif

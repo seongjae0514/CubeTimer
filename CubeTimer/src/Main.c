@@ -8,6 +8,7 @@
 #include "Record.h"
 #include "IoHandler.h"
 #include "Dialog.h"
+#include "Button.h"
 
 INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
                     _In_opt_ HINSTANCE hPrevInstance,
@@ -32,6 +33,7 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
     ScInitializeScramble();
     RcInitializeRecordTable();
 	DlInitializeDialog();
+	BtnInitializeButton();
 
     // 첫 번째 스크램블 생성
     ScGenerateScramble(SC_CUBE_33, 15);

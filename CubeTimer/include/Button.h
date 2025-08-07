@@ -4,6 +4,9 @@
 #include <Windows.h>
 #include "Defs.h"
 
+#define BUTTON_ID_INIT     1001
+#define BUTTON_ID_PLUSTWO  1002
+
 /**
  * @brief 버튼 모듈을 초기화합니다.
  * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.

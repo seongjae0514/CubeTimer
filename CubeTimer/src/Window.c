@@ -71,3 +71,8 @@ BOOL WndUpdateMainWindow(VOID)
 {
     return UpdateWindow(MainWindow);
 }
+
+HWND WndGetMainWindowHandle(VOID)
+{
+    return MainWindow;
+}

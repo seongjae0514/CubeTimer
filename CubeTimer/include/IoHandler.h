@@ -27,4 +27,10 @@ extern BOOL IoHandleSpaceKeyDown(VOID);
  */
 extern BOOL IoHandleSpaceKeyUp(VOID);
 
+/**
+ * @brief 버튼 눌림 이벤트를 처리합니다.
+ * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
+ */
+extern BOOL IoHandleButtonPress(WPARAM wParam);
+
 #endif

@@ -3,6 +3,7 @@
 #include "IoHandler.h"
 #include "Renderer.h"
 #include "Window.h"
+#include "Button.h"
 
 /* Private function *****************************************/
 
@@ -10,69 +11,78 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 {
     switch (uMsg)
     {
-    case WM_DESTROY:
-    {
-        PostQuitMessage(0);
-        return 0;
-    }
-
-    case WM_KEYDOWN:
-    {
-        if (wParam == VK_SPACE)
+        case WM_DESTROY:
         {
-            IoHandleSpaceKeyDown();
+            PostQuitMessage(0);
+            return 0;
         }
-        return 0;
-    }
 
-    case WM_KEYUP:
-    {
-        if (wParam == VK_SPACE)
+        case WM_KEYDOWN:
         {
-            IoHandleSpaceKeyUp();
+            if (wParam == VK_SPACE)
+            {
+                IoHandleSpaceKeyDown();
+            }
+            return 0;
         }
-        return 0;
-    }
 
-    case WM_PAINT:
-    {
-        PAINTSTRUCT ps;
-        HDC         hWindowDC;
+        case WM_KEYUP:
+        {
+            if (wParam == VK_SPACE)
+            {
+                IoHandleSpaceKeyUp();
+            }
+            return 0;
+        }
 
-        hWindowDC = BeginPaint(hWnd, &ps);
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC         hWindowDC;
 
-        /* 백퍼버 생성 */
+            hWindowDC = BeginPaint(hWnd, &ps);
 
-        RECT windowRect;
-        WndGetWindowRect(&windowRect);
+            /* 백퍼버 생성 */
 
-        HDC     hMemDC = CreateCompatibleDC(hWindowDC);
-        HBITMAP hMemBitmap = CreateCompatibleBitmap(hWindowDC, windowRect.right, windowRect.bottom);
-        HBITMAP hOldBitmap = SelectObject(hMemDC, hMemBitmap);
-        FillRect(hMemDC, &windowRect, (HBRUSH)(COLOR_WINDOW + 1));
+            RECT windowRect;
+            WndGetWindowRect(&windowRect);
 
-        /* 그리기 */
+            HDC     hMemDC = CreateCompatibleDC(hWindowDC);
+            HBITMAP hMemBitmap = CreateCompatibleBitmap(hWindowDC, windowRect.right, windowRect.bottom);
+            HBITMAP hOldBitmap = SelectObject(hMemDC, hMemBitmap);
+            FillRect(hMemDC, &windowRect, (HBRUSH)(COLOR_WINDOW + 1));
 
-        RdOnRender(hMemDC);
+            /* 그리기 */
 
-        /* 백퍼버 정리 */
+            RdOnRender(hMemDC);
 
-        BitBlt(hWindowDC, 0, 0, windowRect.right, windowRect.bottom, hMemDC, 0, 0, SRCCOPY);
-        SelectObject(hMemDC, hOldBitmap);
-        DeleteObject(hMemBitmap);
-        DeleteDC(hMemDC);
+            /* 백퍼버 정리 */
 
-        /* 정리 및 반환 */
+            BitBlt(hWindowDC, 0, 0, windowRect.right, windowRect.bottom, hMemDC, 0, 0, SRCCOPY);
+            SelectObject(hMemDC, hOldBitmap);
+            DeleteObject(hMemBitmap);
+            DeleteDC(hMemDC);
 
-        EndPaint(hWnd, &ps);
-        return 0;
-    }
+            /* 정리 및 반환 */
 
-    case WM_SIZE:
-    {
-        WndRepaintMainWindow();
-        return 0;
-    }
+            EndPaint(hWnd, &ps);
+            return 0;
+        }
+
+        case WM_SIZE:
+        {
+            WndRepaintMainWindow();
+            BtnResetButtonPos();
+            return 0;
+        }
+
+        case WM_COMMAND:
+        {
+            SetFocus(hWnd);
+            IoHandleButtonPress(wParam);
+            WndRepaintMainWindow();
+            return 0;
+        }
 
     }
 

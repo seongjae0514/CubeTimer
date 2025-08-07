@@ -5,6 +5,8 @@
 #include "IoHandler.h"
 #include "Record.h"
 #include "Scramble.h"
+#include "Button.h"
+#include "Dialog.h"
 
 /* Global varialbes *************************************************************/
 
@@ -74,23 +76,23 @@ BOOL IoHandleSpaceKeyDown(VOID)
     switch (timerStatus)
     {
         /* 기록 중: 여기서 트리거하면 타이머가 멈춤 */
-    case TM_RECORDING:
-    {
-        IopKillTimer();
-        WCHAR szScrambleBuffer[256];
-        ScScrambleToString(szScrambleBuffer, sizeof(szScrambleBuffer));
-        RcAddRecord(TmGetElapsedTime(), szScrambleBuffer);
-        ScDeleteScramble();
-        ScGenerateScramble(SC_CUBE_33, rand() % 5 + 12);
-        break;
-    }
+        case TM_RECORDING:
+        {
+            IopKillTimer();
+            WCHAR szScrambleBuffer[256];
+            ScScrambleToString(szScrambleBuffer, sizeof(szScrambleBuffer));
+            RcAddRecord(TmGetElapsedTime(), szScrambleBuffer);
+            ScDeleteScramble();
+            ScGenerateScramble(SC_CUBE_33, rand() % 5 + 12);
+            break;
+        }
 
-    /* 멈춤: 여기서 트리거하면 타이머 시작 대기가 시작됨 */
-    case TM_STOP:
-    {
-        IopSetTimer();
-        break;
-    }
+        /* 멈춤: 여기서 트리거하면 타이머 시작 대기가 시작됨 */
+        case TM_STOP:
+        {
+            IopSetTimer();
+            break;
+        }
     }
 
     WndRepaintMainWindow();
@@ -137,4 +139,52 @@ BOOL IoHandleSpaceKeyUp(VOID)
 
     SpaceKeyPressed = FALSE;
     return TRUE;
+}
+
+BOOL IoHandleButtonPress(WPARAM wParam)
+{
+    switch (LOWORD(wParam))
+    {
+        /* 초기화 버튼 눌림 */
+        case BUTTON_ID_INIT:
+        {
+            TmUninitializeTimer();
+			RcUninitializeRecordTable();
+			TmInitializeTimer();
+			RcInitializeRecordTable();
+            return TRUE;
+        }
+
+        /* +2 버튼 눌림 */
+        case BUTTON_ID_PLUSTWO:
+        {
+            WCHAR wBuffer[INPUT_DIALOG_MAX_INPUT_SIZE];
+
+            BOOL ret = DlShowInputDialog(
+                WndGetMainWindowHandle(),
+                L"입력",
+                L"몇 번째 기록에 +2를 하시겠습니까?",
+                wBuffer
+            );
+
+            if (!ret)
+            {
+                return TRUE;
+            }
+
+            INT index = _wtoi(wBuffer);
+
+            if (index < 1)
+            {
+                MessageBoxW(WndGetMainWindowHandle(), L"입력값이 잘못되었습니다", L"오류", MB_OK | MB_ICONERROR);
+            }
+
+            RcGoToFirstRecordNode();
+			RcGoToNextRecordNode(index - 1);
+            RcPlusTwoCurrentNodeRecord();
+            WndRepaintMainWindow();
+            return TRUE;
+        }
+    }
+    return FALSE;
 }

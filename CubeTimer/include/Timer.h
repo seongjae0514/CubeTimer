@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include "defs.h"
 
-#define TIMER_MIN_WAIT_TIME 850
+#define TIMER_MIN_WAIT_TIME 500
 
 /**
  * @brief 현재 타이머의 상태에 대한 열거형입니다.

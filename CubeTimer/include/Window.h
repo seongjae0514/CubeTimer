@@ -39,4 +39,10 @@ extern BOOL WndShowMainWindow(BOOL bShow);
  */
 extern BOOL WndUpdateMainWindow(VOID);
 
+/**
+ * @brief 메인 윈도우의 핸들을 반환합니다.
+ * @return 메인 윈도우의 핸들을 반환합니다.
+ */
+extern HWND WndGetMainWindowHandle(VOID);
+
 #endif

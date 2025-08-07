@@ -78,20 +78,20 @@ BOOL RdOnRender(HDC hDestDC)
         TimerStatus timerStatus = TmGetTimerStatus();
         switch (timerStatus)
         {
-        case TM_RECORDING:
-        case TM_STOP:
-        {
-            break;
-        }
-        case TM_WAITING:
-        {
-            SetTextColor(hDestDC, RGB(255, 0, 0));
-            if (TmCanStart())
+            case TM_RECORDING:
+            case TM_STOP:
             {
-                SetTextColor(hDestDC, RGB(0, 255, 0));
+                break;
             }
-            break;
-        }
+            case TM_WAITING:
+            {
+                SetTextColor(hDestDC, RGB(255, 0, 0));
+                if (TmCanStart())
+                {
+                    SetTextColor(hDestDC, RGB(0, 255, 0));
+                }
+                break;
+            }
         }
 
         /* 그릴 텍스트 문자열 생성 */
@@ -129,6 +129,7 @@ BOOL RdOnRender(HDC hDestDC)
         BOOL bNode = RcGoToFirstRecordNode();
         UINT X = 20;
         UINT Y = 20;
+        UINT idx = 0;
 
         while (bNode)
         {
@@ -143,12 +144,14 @@ BOOL RdOnRender(HDC hDestDC)
 
             /* 기록 문자열 생성 */
 
-            WCHAR wBuffer[512];
-            wsprintfW(wBuffer, L"%d.%02d | %d.%02d | %d.%02d | %s",
-                currentRecord->record / 1000, currentRecord->record / 10 % 100,
-                currentRecord->ao5 / 1000, currentRecord->ao5 / 10 % 100,
-                currentRecord->ao12 / 1000, currentRecord->ao12 / 10 % 100,
-                currentRecord->scramble);
+            WCHAR wBuffer[512] = { 0 };
+            wsprintfW(wBuffer,
+                      RcIsCurrentNodePlusTwo() ? L"(%d) %d.%02d+ | %d.%02d | %d.%02d | %s" : L"(%d) %d.%02d | %d.%02d | %d.%02d | %s",
+                      idx + 1,
+                      currentRecord->record / 1000, currentRecord->record / 10 % 100,
+                      currentRecord->ao5 / 1000, currentRecord->ao5 / 10 % 100,
+                      currentRecord->ao12 / 1000, currentRecord->ao12 / 10 % 100,
+                      currentRecord->scramble);
 
             /* 기록 그리기 */
 
@@ -162,6 +165,8 @@ BOOL RdOnRender(HDC hDestDC)
             Y += textSize.cy;
 
             bNode = RcGoToNextRecordNode(1);
+
+            idx++;
         }
     }
 

@@ -6,7 +6,7 @@
 
 /* Defs ********************************************************************************/
 
-#define BUTTON_WIDTH  200
+#define BUTTON_WIDTH  150
 #define BUTTON_HEIGHT 20
 
 /* Variables ***************************************************************************/
@@ -43,10 +43,13 @@ BOOL BtnpMoveButton(HWND hButton, INT x, INT y, UINT width, UINT height, BOOL bR
 
 BOOL BtnInitializeButton(VOID)
 {
+	RECT windowRect;
+	WndGetWindowRect(&windowRect);
+
 	InitButtonHandle = BtnpCreateButton(
 		L"√ ±‚»≠",
 		BUTTON_WIDTH, BUTTON_HEIGHT,
-		0, 0,
+		windowRect.right - 20 - BUTTON_WIDTH, 20,
 		BUTTON_ID_INIT
 	);
 
@@ -58,7 +61,7 @@ BOOL BtnInitializeButton(VOID)
 	PlusTwoButtonHandle = BtnpCreateButton(
 		L"+2",
 		BUTTON_WIDTH, BUTTON_HEIGHT,
-		0, 0,
+		windowRect.right - 20 - BUTTON_WIDTH, 20 + BUTTON_HEIGHT + 10, 
 		BUTTON_ID_PLUSTWO
 	);
 
@@ -79,7 +82,7 @@ BOOL BtnUninitializeButton(VOID)
 
 BOOL BtnResetButtonPos(VOID)
 {
-	if (!InitButtonHandle || PlusTwoButtonHandle)
+	if (!InitButtonHandle || !PlusTwoButtonHandle)
 	{
 		return FALSE;
 	}
@@ -95,7 +98,7 @@ BOOL BtnResetButtonPos(VOID)
 
 	BtnpMoveButton(
 		PlusTwoButtonHandle,
-		clientRect.right - BUTTON_WIDTH - 20, 20 + BUTTON_HEIGHT + 20,
+		clientRect.right - BUTTON_WIDTH - 20, 20 + BUTTON_HEIGHT + 10,
 		BUTTON_WIDTH, BUTTON_HEIGHT, TRUE
 	);
 

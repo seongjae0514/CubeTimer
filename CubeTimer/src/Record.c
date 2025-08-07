@@ -263,11 +263,11 @@ BOOL RcPlusTwoCurrentNodeRecord(VOID)
         CurrentNode->bPlusTwo = !CurrentNode->bPlusTwo;
         if (CurrentNode->bPlusTwo)
         {
-            CurrentNode->record.record += 2;
+            CurrentNode->record.record += 2000;
         }
         else
         {
-            CurrentNode->record.record -= 2;
+            CurrentNode->record.record -= 2000;
         }
         RcpUpdateAoRecord();
     }
@@ -277,5 +277,10 @@ BOOL RcPlusTwoCurrentNodeRecord(VOID)
     }
 
     return TRUE;
+}
+
+BOOL RcIsCurrentNodePlusTwo(VOID)
+{
+    return CurrentNode->bPlusTwo;
 }
 
