@@ -287,6 +287,28 @@ BOOL IoHandleButtonPress(WPARAM wParam)
                     break;
                 }
 
+                case RECORD_ERROR_ALLOCATION_FAILED:
+                {
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        L"메모리 할당을 실패했습니다. \r\n메모리가 손상되었거나 파일이 잘못되었을 수 있습니다.",
+                        L"오류",
+                        MB_OK | MB_ICONERROR
+                    );
+                    break;
+                }
+
+                case RECORD_ERROR_ADD_RECORD_FAILED:
+                {
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        L"기록 추가를 실패했습니다. \r\n메모리가 손상되었거나 파일이 잘못되었을 수 있습니다.",
+                        L"오류",
+                        MB_OK | MB_ICONERROR
+                    );
+                    break;
+                }
+
                 default:
                 {
                     WCHAR wBuffer[256];

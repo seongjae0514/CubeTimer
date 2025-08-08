@@ -259,9 +259,16 @@ static INT RcpLoadRecordFromFile(LPCWSTR lpszFilePath)
 
         fread(lpBuffer, sizeof(WCHAR), len, file);
 
+        // 널문자 쓰기 (혹시 모를 잘못된 문자열을 대비하기 위함)
+
+        lpBuffer[len - 1] = 0;
+
         // 기록 저장
 
-        RcpAddRecord(record, lpBuffer);
+        if (!RcpAddRecord(record, lpBuffer))
+        {
+            return RECORD_ERROR_ADD_RECORD_FAILED;
+        }
 
         // 메모리 해제하고 끝내기
 

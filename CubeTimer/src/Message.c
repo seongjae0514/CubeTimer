@@ -99,7 +99,7 @@ WNDPROC MsgGetWindowProc(VOID)
 INT MsgStartMessageLoop(VOID)
 {
     MSG msg;
-     while (GetMessageW(&msg, NULL, 0, 0))
+    while (GetMessageW(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
