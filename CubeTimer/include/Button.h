@@ -4,8 +4,10 @@
 #include <Windows.h>
 #include "Defs.h"
 
-#define BUTTON_ID_INIT     1001
-#define BUTTON_ID_PLUSTWO  1002
+#define BUTTON_ID_INIT       1001
+#define BUTTON_ID_PLUSTWO    1002
+#define BUTTON_ID_LOADRECORD 1003
+#define BUTTON_ID_SAVERECORD 1004
 
 /**
  * @brief 버튼 모듈을 초기화합니다.

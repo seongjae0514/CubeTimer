@@ -13,6 +13,8 @@
 
 HWND InitButtonHandle;
 HWND PlusTwoButtonHandle;
+HWND LoadRecordButtonHandle;
+HWND SaveRecordButtonHandle;
 
 /* Private functions *******************************************************************/
 
@@ -49,7 +51,7 @@ BOOL BtnInitializeButton(VOID)
 	InitButtonHandle = BtnpCreateButton(
 		L"초기화",
 		BUTTON_WIDTH, BUTTON_HEIGHT,
-		windowRect.right - 20 - BUTTON_WIDTH, 20,
+		0, 0,
 		BUTTON_ID_INIT
 	);
 
@@ -61,11 +63,35 @@ BOOL BtnInitializeButton(VOID)
 	PlusTwoButtonHandle = BtnpCreateButton(
 		L"+2",
 		BUTTON_WIDTH, BUTTON_HEIGHT,
-		windowRect.right - 20 - BUTTON_WIDTH, 20 + BUTTON_HEIGHT + 10, 
+		0, 0,
 		BUTTON_ID_PLUSTWO
 	);
 
 	if (!PlusTwoButtonHandle)
+	{
+		return FALSE;
+	}
+
+	LoadRecordButtonHandle = BtnpCreateButton(
+		L"기록 불러오기",
+		BUTTON_WIDTH, BUTTON_HEIGHT,
+		0, 0,
+		BUTTON_ID_LOADRECORD
+	);
+
+	if (!LoadRecordButtonHandle)
+	{
+		return FALSE;
+	}
+
+	SaveRecordButtonHandle = BtnpCreateButton(
+		L"기록 저장하기",
+		BUTTON_WIDTH, BUTTON_HEIGHT,
+		0, 0,
+		BUTTON_ID_SAVERECORD
+	);
+
+	if (!SaveRecordButtonHandle)
 	{
 		return FALSE;
 	}
@@ -98,7 +124,19 @@ BOOL BtnResetButtonPos(VOID)
 
 	BtnpMoveButton(
 		PlusTwoButtonHandle,
-		clientRect.right - BUTTON_WIDTH - 20, 20 + BUTTON_HEIGHT + 10,
+		clientRect.right - BUTTON_WIDTH - 20, 20 + (BUTTON_HEIGHT + 10) * 1,
+		BUTTON_WIDTH, BUTTON_HEIGHT, TRUE
+	);
+
+	BtnpMoveButton(
+		SaveRecordButtonHandle,
+		clientRect.right - BUTTON_WIDTH - 20, 20 + (BUTTON_HEIGHT + 10) * 2,
+		BUTTON_WIDTH, BUTTON_HEIGHT, TRUE
+	);
+
+	BtnpMoveButton(
+		LoadRecordButtonHandle,
+		clientRect.right - BUTTON_WIDTH - 20, 20 + (BUTTON_HEIGHT + 10) * 3,
 		BUTTON_WIDTH, BUTTON_HEIGHT, TRUE
 	);
 

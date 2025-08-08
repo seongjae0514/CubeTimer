@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include "Defs.h"
 
+#define RECORD_FILE_ERROR_INVALID_FILE_TYPE (-1)
+#define RECORD_ERROR_ALLOCATION_FAILED      (-2)
 
 /**
  * @brief 기록을 담는 구조체입니다.
@@ -50,5 +52,17 @@ extern const RecordStruct* RcGetRecordStructAddress(UINT uIndex);
  * @brief 레코드 테이블의 레코드 갯수를 반환합니다.
  */
 extern UINT RcGetRecordCount(VOID);
+
+/**
+ * @brief 레코드 파일을 lpszFilePath에 저장합니다.
+ * @return 성공하면 0, 실패하면 해당하는 오류 코드를 반환합니다.
+ */
+extern INT RcLoadRecordFromFile(LPCWSTR lpszFilePath);
+
+/**
+ * @brief 레코드를 lpszFilePath에서 불러옵니다.
+ * @return 성공하면 0, 실패하면 해당하는 오류 코드를 반환합니다.
+ */
+extern INT RcSaveRecordToFile(LPCWSTR lpszFilePath);
 
 #endif

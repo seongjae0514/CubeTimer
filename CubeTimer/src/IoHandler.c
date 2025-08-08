@@ -187,6 +187,110 @@ BOOL IoHandleButtonPress(WPARAM wParam)
             WndRepaintMainWindow();
             return TRUE;
         }
+
+        /* 기록 저장 버튼 눌림 */
+        case BUTTON_ID_SAVERECORD:
+        {
+            WCHAR wBuffer[MAX_PATH] = { 0 };
+            BOOL dlRet = DlShowSaveFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file\0*.ctr\0All files\0*.*\0");
+
+            if (!dlRet)
+            {
+                return TRUE;
+            }
+
+            INT ret = RcSaveRecordToFile(wBuffer);
+
+            switch (ret)
+            {
+                case 0:
+                {
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        L"저장 성공", L"알림",
+                        MB_OK | MB_ICONINFORMATION
+                    );
+                    break;
+                }
+
+                case EACCES:
+                {
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        L"저장을 실패했습니다. 권한이 부족합니다.",
+                        L"오류",
+                        MB_OK | MB_ICONERROR
+                    );
+                    break;
+                }
+
+                default:
+                {
+                    WCHAR wBuffer[256];
+                    wsprintfW(wBuffer, L"저장을 실패했습니다. 알 수 없는 오류가 발생했습니다. 오류 코드: %d", ret);
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        wBuffer,
+                        L"오류",
+                        MB_ICONERROR | MB_OK
+                    );
+                    break;
+                }
+            }
+            return TRUE;
+        }
+
+        /* 기록 불러오기 버튼 눌림 */
+        case BUTTON_ID_LOADRECORD:
+        {
+            WCHAR wBuffer[MAX_PATH] = { 0 };
+            BOOL dlRet = DlShowOpenFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file\0*.ctr\0All files\0*.*\0");
+
+            if (!dlRet)
+            {
+                return TRUE;
+            }
+
+            INT ret = RcLoadRecordFromFile(wBuffer);
+
+            switch (ret)
+            {
+                case 0:
+                {
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        L"불러오기 성공", L"알림",
+                        MB_OK | MB_ICONINFORMATION
+                    );
+                    break;
+                }
+
+                case EACCES:
+                {
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        L"파일 열기를 실패했습니다. 권한이 부족합니다.",
+                        L"오류",
+                        MB_OK | MB_ICONERROR
+                    );
+                    break;
+                }
+
+                default:
+                {
+                    WCHAR wBuffer[256];
+                    wsprintfW(wBuffer, L"파일 열기를 실패했습니다. 알 수 없는 오류가 발생했습니다. 오류 코드: %d", ret);
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        wBuffer,
+                        L"오류",
+                        MB_ICONERROR | MB_OK
+                    );
+                    break;
+                }
+            }
+            return TRUE;
+        }
     }
     return FALSE;
 }

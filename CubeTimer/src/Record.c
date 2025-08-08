@@ -1,10 +1,24 @@
 #include "Debug.h"
+
 #include <Windows.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <time.h>
+#include <string.h>
+
 #include "Record.h"
 
 /* Defines *********************************************************************/
 
 #define TABLE_ALLOCATE_SIZE 5
+
+typedef struct tagRecordFileHeaderStruct {
+    DWORD  type;
+    time_t time;
+    UINT   count;
+} RecordFileHeaderStruct;
+
+#define RECORD_FILE_TYPE_DEFAULT_FILE_WIN64 0x00000001
 
 /* Global variables ************************************************************/
 
@@ -127,6 +141,109 @@ static BOOL RcpDestroyTable(VOID)
     return TRUE;
 }
 
+static INT RcpSaveRecordToFile(LPCWSTR lpszFilePath)
+{
+    /* 파일 열기 */
+
+    FILE* file = _wfopen(lpszFilePath, L"wb");
+
+    if (!file)
+    {
+        return errno;
+    }
+
+    /* 파일 헤더 쓰기 */
+
+    RecordFileHeaderStruct fileHeader;
+    fileHeader.type  = RECORD_FILE_TYPE_DEFAULT_FILE_WIN64;
+    fileHeader.count = RecordCount;
+    fileHeader.time  = time(NULL);
+
+    fwrite(&fileHeader, sizeof(fileHeader), 1, file);                             // 파일 헤더 작성
+
+    /* 기록과 스크램블 쓰기 */
+
+    for (UINT i = 0; i < RecordCount; i++)
+    {
+        SIZE_T len = lstrlenW(RecordTable[i].scramble) + 1;                       // 문자열 크기 얻기 (NULL문자 포함)
+        fwrite(&(RecordTable[i].record), sizeof(RecordTable[i].record), 1, file); // 기록 작성
+        fwrite(&len, sizeof(len), 1, file);                                       // 스크램블 크기 작성
+        fwrite(RecordTable[i].scramble, sizeof(WCHAR), len, file);                // 스크램블 문자열 작성
+    }
+    
+    /* 정리 및 반환 */
+
+    fclose(file);
+    return 0;
+}
+
+static INT RcpLoadRecordFromFile(LPCWSTR lpszFilePath)
+{
+    INT returnValue = 0;
+
+    /* 파일 열기 */
+
+    FILE* file = _wfopen(lpszFilePath, L"rb");
+
+    if (!file)
+    {
+        return errno;
+    }
+
+    /* 파일 헤더 읽기 */
+
+    RecordFileHeaderStruct fileHeader;
+    fread(&fileHeader, sizeof(fileHeader), 1, file);
+
+    /* 파일 헤더 검사 */
+
+    if (fileHeader.type != RECORD_FILE_TYPE_DEFAULT_FILE_WIN64)
+    {
+        return -1;
+    }
+
+    /* 기록 읽고 저장 */
+
+    for (UINT i = 0; i < fileHeader.count; i++)
+    {
+        // 기록 읽기
+
+        MillisecTime record;
+        fread(&record, sizeof(MillisecTime), 1, file);
+
+        // 스크램블 길이 읽기
+
+        SIZE_T len;
+        fread(&len, sizeof(SIZE_T), 1, file);
+
+        // 스크램블 읽기
+
+        LPWSTR lpBuffer = (LPWSTR)malloc(sizeof(WCHAR) * len);
+        
+        if (!lpBuffer)
+        {
+            returnValue = RECORD_ERROR_ALLOCATION_FAILED;
+            goto cleanup;
+        }
+
+        fread(lpBuffer, sizeof(WCHAR), len, file);
+
+        // 기록 저장
+
+        RcAddRecord(record, lpBuffer);
+
+        // 메모리 해제하고 끝내기
+
+        free(lpBuffer);
+    }
+
+    /* 정리 및 반환 */
+
+cleanup:
+    fclose(file);
+    return returnValue;
+}
+
 /* Global functions *****************************************************************/
 
 BOOL RcInitialize(VOID)
@@ -220,4 +337,14 @@ const RecordStruct* RcGetRecordStructAddress(UINT uIndex)
 UINT RcGetRecordCount(VOID)
 {
     return RecordCount;
+}
+
+INT RcLoadRecordFromFile(LPCWSTR lpszFilePath)
+{
+    return RcpLoadRecordFromFile(lpszFilePath);
+}
+
+INT RcSaveRecordToFile(LPCWSTR lpszFilePath)
+{
+    return RcpSaveRecordToFile(lpszFilePath);
 }
