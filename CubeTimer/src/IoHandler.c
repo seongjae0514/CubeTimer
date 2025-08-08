@@ -192,7 +192,7 @@ BOOL IoHandleButtonPress(WPARAM wParam)
         case BUTTON_ID_SAVERECORD:
         {
             WCHAR wBuffer[MAX_PATH] = { 0 };
-            BOOL dlRet = DlShowSaveFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file\0*.ctr\0All files\0*.*\0");
+            BOOL dlRet = DlShowSaveFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file (*.ctr)\0*.ctr\0All files\0*.*\0");
 
             if (!dlRet)
             {
@@ -244,7 +244,7 @@ BOOL IoHandleButtonPress(WPARAM wParam)
         case BUTTON_ID_LOADRECORD:
         {
             WCHAR wBuffer[MAX_PATH] = { 0 };
-            BOOL dlRet = DlShowOpenFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file\0*.ctr\0All files\0*.*\0");
+            BOOL dlRet = DlShowOpenFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file (*.ctr)\0*.ctr\0All files\0*.*\0");
 
             if (!dlRet)
             {
