@@ -1,6 +1,7 @@
 #include "Debug.h"
 #include <Windows.h>
 #include "Window.h"
+#include "Resource.h"
 
 static LPCWSTR ClassName = L"CubeTimerMainWindow";
 static HWND    MainWindow = NULL;
@@ -20,6 +21,7 @@ BOOL WndCreateMainWindow(LPCWSTR lpTitle, UINT uWidth, UINT uHeight, WNDPROC pro
     wc.lpfnWndProc   = proc;
     wc.lpszClassName = ClassName;
     wc.hCursor       = LoadCursorW(NULL, IDC_ARROW);
+    wc.hIcon         = LoadIconW(hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
     if (!RegisterClassExW(&wc))
     {
