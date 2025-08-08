@@ -141,6 +141,37 @@ static BOOL RcpDestroyTable(VOID)
     return TRUE;
 }
 
+static BOOL RcpAddRecord(MillisecTime record, LPCWSTR lpszScramble)
+{
+    /* 기록 추가 */
+
+    if (!RcpAllocateTable())
+    {
+        return FALSE;
+    }
+    RecordStruct* currentNode = &RecordTable[RecordCount];
+    RecordCount++;
+
+    /* 기록 할당 */
+
+    currentNode->record = record;
+    currentNode->ao5 = 0;
+    currentNode->ao12 = 0;
+    currentNode->bPlusTwo = FALSE;
+    currentNode->scramble = (LPWSTR)malloc(sizeof(WCHAR) * lstrlenW(lpszScramble) + sizeof(WCHAR));
+
+    if (!currentNode->scramble)
+    {
+        return FALSE;
+    }
+
+    lstrcpyW(currentNode->scramble, lpszScramble);
+
+    /* 반환 */
+
+    return TRUE;
+}
+
 static INT RcpSaveRecordToFile(LPCWSTR lpszFilePath)
 {
     /* 파일 열기 */
@@ -230,7 +261,7 @@ static INT RcpLoadRecordFromFile(LPCWSTR lpszFilePath)
 
         // 기록 저장
 
-        RcAddRecord(record, lpBuffer);
+        RcpAddRecord(record, lpBuffer);
 
         // 메모리 해제하고 끝내기
 
@@ -273,35 +304,15 @@ BOOL RcUninitialize(VOID)
 
 BOOL RcAddRecord(MillisecTime record, LPCWSTR lpScramble)
 {
-    /* 기록 추가 */
-
-    if (!RcpAllocateTable())
+    if (!RcpAddRecord(record, lpScramble))
     {
         return FALSE;
     }
-    RecordStruct* currentNode = &RecordTable[RecordCount];
-    RecordCount++;
 
-    /* 기록 할당 */
-
-    currentNode->record   = record;
-    currentNode->ao5      = 0;
-    currentNode->ao12     = 0;
-    currentNode->bPlusTwo = FALSE;
-    currentNode->scramble = (LPWSTR)malloc(sizeof(WCHAR) * lstrlenW(lpScramble) + sizeof(WCHAR));
-    
-    if (!currentNode->scramble)
+    if (!RcpUpdateAoRecord())
     {
         return FALSE;
     }
-    
-    lstrcpyW(currentNode->scramble, lpScramble);
-
-    /* 평균 갱신 */
-
-    RcpUpdateAoRecord();
-
-    /* 반환 */
 
     return TRUE;
 }

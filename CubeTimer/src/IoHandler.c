@@ -276,6 +276,17 @@ BOOL IoHandleButtonPress(WPARAM wParam)
                     break;
                 }
 
+                case RECORD_FILE_ERROR_INVALID_FILE_TYPE:
+                {
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        L"불러오기를 실패했습니다. \r\n올바른 큐브 타이머 기록 파일 (.ctr) 이 아닙니다. \r\n파일이 손상되었을 수 있습니다.",
+                        L"오류",
+                        MB_OK | MB_ICONERROR
+                    );
+                    break;
+                }
+
                 default:
                 {
                     WCHAR wBuffer[256];
