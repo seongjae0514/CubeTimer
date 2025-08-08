@@ -31,7 +31,7 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
     RdInitializeRenderer(60, 18);
     IoInitializeIoHandler();
     ScInitializeScramble();
-    RcInitializeRecordTable();
+    RcInitialize();
 	DlInitializeDialog();
 	BtnInitializeButton();
 
@@ -49,7 +49,7 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
     RdUninitializeRenderer();
     IoUninitializeIoHandler();
     ScUninitializeScramble();
-    RcUninitializeRecordTable();
+    RcUninitialize();
 
     PRINT_DEBUG_MEMORY_CHECK();
 

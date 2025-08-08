@@ -149,9 +149,9 @@ BOOL IoHandleButtonPress(WPARAM wParam)
         case BUTTON_ID_INIT:
         {
             TmUninitializeTimer();
-			RcUninitializeRecordTable();
+			RcUninitialize();
 			TmInitializeTimer();
-			RcInitializeRecordTable();
+			RcInitialize();
             return TRUE;
         }
 
@@ -179,9 +179,11 @@ BOOL IoHandleButtonPress(WPARAM wParam)
                 MessageBoxW(WndGetMainWindowHandle(), L"입력값이 잘못되었습니다", L"오류", MB_OK | MB_ICONERROR);
             }
 
-            RcGoToFirstRecordNode();
-			RcGoToNextRecordNode(index - 1);
-            RcPlusTwoCurrentNodeRecord();
+            if (!RcTogglePlusTwo(index - 1))
+            {
+                MessageBoxW(WndGetMainWindowHandle(), L"입력값이 잘못되었습니다.", L"오류", MB_OK | MB_ICONERROR);
+            }
+
             WndRepaintMainWindow();
             return TRUE;
         }
