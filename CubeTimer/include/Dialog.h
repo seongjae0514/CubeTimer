@@ -23,4 +23,16 @@ extern BOOL DlUninitializeDialog(VOID);
  */
 extern BOOL DlShowInputDialog(HWND hWnd, LPCWSTR lpszDialogTitle, LPCWSTR lpszDialogMessage, LPWSTR lpInputBuffer);
 
+/**
+ * @brief 파일 저장 경로를 반환하는 다이얼로그를 표시합니다.
+ * @return 성공 시 TRUE, 취소 시 FALSE를 반환합니다.
+ */
+extern BOOL DlShowSaveFileDialog(HWND hWnd, LPWSTR lpPathBuffer, DWORD bufferSize, LPCWSTR lpstrFilter);
+
+/**
+ * @brief 파일 열기 경로를 반환하는 다이얼로그를 표시합니다.
+ * @return 성공 시 TRUE, 취소 시 FALSE를 반환합니다.
+ */
+extern BOOL DlShowOpenFileDialog(HWND hWnd, LPWSTR lpPathBuffer, DWORD bufferSize, LPCWSTR lpstrFilter);
+
 #endif

@@ -1,8 +1,11 @@
 #include "Debug.h"
 
 #include <Windows.h>
+#include <commdlg.h>
 #include "Dialog.h"
-#include "../resource/resource.h"
+#include "resource.h"
+
+
 
 /* Variables **************************************************/
 
@@ -89,4 +92,40 @@ BOOL DlShowInputDialog(HWND hWnd, LPCWSTR lpszDialogTitle, LPCWSTR lpszDialogMes
 
 	INT_PTR result = DialogBoxParamW(GetModuleHandleW(NULL), MAKEINTRESOURCE(IDD_INPUTDLG), hWnd, DlpInputDialogProc, (LPARAM)&data);
 	return result == IDOK;
+}
+
+BOOL DlShowSaveFileDialog(HWND hWnd, LPWSTR lpPathBuffer, DWORD bufferSize, LPCWSTR lpstrFilter)
+{
+	OPENFILENAME ofn = { 0 };
+
+	ofn.lStructSize     = sizeof(ofn);
+	ofn.hwndOwner       = hWnd;
+	ofn.lpstrFile       = lpPathBuffer;
+	ofn.nMaxFile        = (DWORD)bufferSize;
+	ofn.lpstrFilter     = lpstrFilter;
+	ofn.nFilterIndex    = 1;
+	ofn.lpstrFileTitle  = NULL;
+	ofn.nMaxFileTitle   = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags           = OFN_OVERWRITEPROMPT;
+
+	return GetSaveFileNameW(&ofn);
+}
+
+BOOL DlShowOpenFileDialog(HWND hWnd, LPWSTR lpPathBuffer, DWORD bufferSize, LPCWSTR lpstrFilter)
+{
+	OPENFILENAME ofn = { 0 };
+
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = hWnd;
+	ofn.lpstrFile = lpPathBuffer;
+	ofn.nMaxFile = (DWORD)bufferSize;
+	ofn.lpstrFilter = lpstrFilter;
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	return GetOpenFileNameW(&ofn);
 }
