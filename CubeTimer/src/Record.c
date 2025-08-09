@@ -14,8 +14,10 @@
 
 typedef struct tagRecordFileHeaderStruct {
     DWORD  type;
+    DWORD  __pading1;
     time_t time;
     UINT   count;
+    DWORD  __pading2;
 } RecordFileHeaderStruct;
 
 #define RECORD_FILE_TYPE_DEFAULT_FILE_WIN64 0x00000001
@@ -154,7 +156,7 @@ static INT RcpSaveRecordToFile(LPCWSTR lpszFilePath)
 
     /* 파일 헤더 쓰기 */
 
-    RecordFileHeaderStruct fileHeader;
+    RecordFileHeaderStruct fileHeader = { 0 };
     fileHeader.type  = RECORD_FILE_TYPE_DEFAULT_FILE_WIN64;
     fileHeader.count = RecordCount;
     fileHeader.time  = time(NULL);
