@@ -10,7 +10,7 @@
 
 /* Defines *********************************************************************/
 
-#define TABLE_ALLOCATE_SIZE 5
+#define TABLE_ALLOCATE_SIZE 100
 
 typedef struct tagRecordFileHeaderStruct {
     DWORD  type;
