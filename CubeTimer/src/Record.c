@@ -12,13 +12,13 @@
 
 #define TABLE_ALLOCATE_SIZE 100
 
-typedef struct tagRecordFileHeaderStruct {
+typedef struct tagRecordFileHeaderStructWin64 {
     DWORD  type;
     DWORD  __pading1;
     time_t time;
     UINT   count;
     DWORD  __pading2;
-} RecordFileHeaderStruct;
+} RecordFileHeaderStructWin64;
 
 #define RECORD_FILE_TYPE_DEFAULT_FILE_WIN64 0x00000001
 
@@ -156,7 +156,7 @@ static INT RcpSaveRecordToFile(LPCWSTR lpszFilePath)
 
     /* 파일 헤더 쓰기 */
 
-    RecordFileHeaderStruct fileHeader = { 0 };
+    RecordFileHeaderStructWin64 fileHeader = { 0 };
     fileHeader.type  = RECORD_FILE_TYPE_DEFAULT_FILE_WIN64;
     fileHeader.count = RecordCount;
     fileHeader.time  = time(NULL);
@@ -194,7 +194,7 @@ static INT RcpLoadRecordFromFile(LPCWSTR lpszFilePath)
 
     /* 파일 헤더 읽기 */
 
-    RecordFileHeaderStruct fileHeader;
+    RecordFileHeaderStructWin64 fileHeader;
     fread(&fileHeader, sizeof(fileHeader), 1, file);
 
     /* 파일 헤더 검사 */
