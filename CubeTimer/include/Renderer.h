@@ -22,4 +22,16 @@ extern BOOL RdUninitializeRenderer(VOID);
  */
 extern BOOL RdOnRender(HDC hDestDC);
 
+/**
+ * @brief 기록이 그려질 위치를 스크롤합니다.
+ * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
+ */
+extern BOOL RdScrollRecord(BOOL bForward, HWND hWnd);
+
+/**
+ * @brief 기록이 그려질 위치 스크롤을 초기화합니다.
+ * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
+ */
+extern BOOL RdInitializeScroll(VOID);
+
 #endif

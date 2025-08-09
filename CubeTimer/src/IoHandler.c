@@ -7,6 +7,7 @@
 #include "Scramble.h"
 #include "Button.h"
 #include "Dialog.h"
+#include "Renderer.h"
 
 /* Global varialbes *************************************************************/
 
@@ -152,6 +153,7 @@ BOOL IoHandleButtonPress(WPARAM wParam)
 			RcUninitialize();
 			TmInitializeTimer();
 			RcInitialize();
+            RdInitializeScroll();
             return TRUE;
         }
 
@@ -326,4 +328,28 @@ BOOL IoHandleButtonPress(WPARAM wParam)
         }
     }
     return FALSE;
+}
+
+BOOL IoHandleMouseWheel(WPARAM wParam, LPARAM lParam)
+{
+    INT count = GET_WHEEL_DELTA_WPARAM(wParam) / 120;
+
+    if (count > 0)
+    {
+        for (UINT i = 0; i < count; i++)
+        {
+            RdScrollRecord(FALSE, WndGetMainWindowHandle());
+        }
+    }
+    else
+    {
+        for (UINT i = 0; i < -count; i++)
+        {
+            RdScrollRecord(TRUE, WndGetMainWindowHandle());
+        }
+    }
+
+    WndRepaintMainWindow();
+
+    return TRUE;
 }

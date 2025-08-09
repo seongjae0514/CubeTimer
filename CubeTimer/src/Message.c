@@ -84,6 +84,12 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
             return 0;
         }
 
+        case WM_MOUSEWHEEL:
+        {
+            IoHandleMouseWheel(wParam, lParam);
+            return 0;
+        }
+
     }
 
     return DefWindowProcW(hWnd, uMsg, wParam, lParam);

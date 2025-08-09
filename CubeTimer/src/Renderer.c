@@ -10,8 +10,13 @@
 
 /* Global variables **************************************************************+*/
 
+#define RECORD_POINT_X 20
+#define RECORD_POINT_Y 20
+
 HFONT TimerFont;
 HFONT RecordFont;
+
+INT   ScrollPx;
 
 /* Private variables *************************************************************+*/
 
@@ -82,15 +87,17 @@ static BOOL RdpPaintTimer(HDC hDC)
 
 static BOOL RdpPaintRecords(HDC hDC)
 {
-    /* GDI 초기화 */
+    /* GDI 초기화 및 정보 얻기 */
 
-    HFONT    hOldFont = SelectObject(hDC, RecordFont);
-    INT      oldBkMode = SetBkMode(hDC, TRANSPARENT);
+    HFONT hOldFont  = SelectObject(hDC, RecordFont);
+    INT   oldBkMode = SetBkMode(hDC, TRANSPARENT);
+    UINT  uRecordCount = RcGetRecordCount();
+    RECT  windowRect;
+    WndGetWindowRect(&windowRect);
 
     /* 레코드 순회하면서 기록 그리기 */
     
-    UINT uRecordCount = RcGetRecordCount();
-    UINT y = 20;
+    INT  x = 20, y = 20 + ScrollPx;
 
     for (UINT i = 0; i < uRecordCount; i++)
     {
@@ -111,15 +118,27 @@ static BOOL RdpPaintRecords(HDC hDC)
             record->scramble
         );
 
+        /* 그려질 위치 계산 */
+
+        SIZE textSize;
+        GetTextExtentPoint32W(hDC, wBuffer, lstrlenW(wBuffer), &textSize);
+
+        if (y > windowRect.bottom)
+        {
+            break;
+        }
+        else if (y < 0 - textSize.cy)
+        {
+            goto cleanup;
+        }
+
         /* 그리기 */
 
         TextOutW(hDC, 20, y, wBuffer, lstrlenW(wBuffer));
 
         /* y 증가 */
 
-        SIZE textSize;
-        GetTextExtentPoint32W(hDC, wBuffer, lstrlenW(wBuffer), &textSize);
-
+        cleanup:
         y += textSize.cy;
     }
 
@@ -216,5 +235,68 @@ BOOL RdOnRender(HDC hDestDC)
     SetBkMode(hDestDC, oldBkMode);
     SetTextColor(hDestDC, oldTextColor);
 
+    return TRUE;
+}
+
+BOOL RdScrollRecord(BOOL bForward, HWND hDestWindow)
+{
+    RECT windowRect;
+    SIZE textSize;
+
+    /* GDI 정보 얻기 */
+
+    // 윈도우 크기
+    GetWindowRect(hDestWindow, &windowRect);
+    
+    // 텍스트 크기
+    HDC hDestWindowDC = GetDC(hDestWindow);
+    HFONT hOldFont = SelectObject(hDestWindowDC, RecordFont);
+    GetTextExtentPoint32W(hDestWindowDC, L"A", 1, &textSize);
+    SelectObject(hDestWindowDC, hOldFont);
+    ReleaseDC(hDestWindow, hDestWindowDC);
+    
+    /* 스크롤하고 가능한지 확인하고 되돌릴지 정하기 */
+
+    // forward=TRUE 면 위로 스크롤, 아니면 아래로 스크롤
+
+    if (bForward)
+    {
+        INT newScrollPx = ScrollPx - 20;
+        INT y = RECORD_POINT_Y + newScrollPx + (textSize.cy * (INT)RcGetRecordCount());
+
+        if (y <= 0)
+        {
+            // 스크롤 안함
+            return FALSE;
+        }
+        else
+        {
+            // 스크롤 하기
+            ScrollPx = newScrollPx;
+            return TRUE;
+        }
+    }
+    else
+    {
+        INT newScrollPx = ScrollPx + 20;
+        INT y = RECORD_POINT_Y + newScrollPx + (textSize.cy);
+
+        if (y >= windowRect.bottom)
+        {
+            // 스크롤 안함
+            return FALSE;
+        }
+        else
+        {
+            // 스크롤 하기
+            ScrollPx = newScrollPx;
+            return TRUE;
+        }
+    }
+}
+
+BOOL RdInitializeScroll(VOID)
+{
+    ScrollPx = 0;
     return TRUE;
 }
