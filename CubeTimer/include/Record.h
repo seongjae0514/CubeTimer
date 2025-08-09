@@ -7,6 +7,7 @@
 #define RECORD_FILE_ERROR_INVALID_FILE_TYPE (-1)
 #define RECORD_ERROR_ALLOCATION_FAILED      (-2)
 #define RECORD_ERROR_ADD_RECORD_FAILED      (-3)
+#define RECORD_FILE_ERROR_VALIDATION_CODE_NOT_EQUAL (-4)
 
 /**
  * @brief 기록을 담는 구조체입니다.

@@ -203,6 +203,10 @@ static INT RcpSaveRecordToFile(LPCWSTR lpszFilePath)
         fwrite(&len, sizeof(len), 1, file);                                       // 스크램블 크기 작성
         fwrite(RecordTable[i].scramble, sizeof(WCHAR), len, file);                // 스크램블 문자열 작성
     }
+
+    /* 마지막에 유효성 검증용 flieHeader.time을 씀 */
+
+    fwrite(&fileHeader.time, sizeof(time_t), 1, file);
     
     /* 정리 및 반환 */
 
@@ -269,12 +273,26 @@ static INT RcpLoadRecordFromFile(LPCWSTR lpszFilePath)
 
         if (!RcpAddRecord(record, lpBuffer))
         {
-            return RECORD_ERROR_ADD_RECORD_FAILED;
+            free(lpBuffer);
+            returnValue = RECORD_ERROR_ADD_RECORD_FAILED;
+            goto cleanup;
         }
 
         // 메모리 해제하고 끝내기
 
         free(lpBuffer);
+    }
+
+    /* 뒤에서 sizeof(time_t) 만큼 이동해서 유효한지 검사하기 */
+
+    fseek(file, -((long)sizeof(time_t)), SEEK_END);
+
+    time_t valid = 0;
+    fread(&valid, sizeof(time_t), 1, file);
+
+    if (valid != fileHeader.time)
+    {
+        returnValue = RECORD_FILE_ERROR_VALIDATION_CODE_NOT_EQUAL;
     }
 
     /* 정리 및 반환 */

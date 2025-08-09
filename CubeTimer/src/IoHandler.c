@@ -311,6 +311,21 @@ BOOL IoHandleButtonPress(WPARAM wParam)
                     break;
                 }
 
+                case RECORD_FILE_ERROR_VALIDATION_CODE_NOT_EQUAL:
+                {
+                    MessageBoxW(
+                        WndGetMainWindowHandle(),
+                        L"기록 파일이 올바른 큐브 타이머 기록 파일 (*.ctr) 이 아닙니다.\r\n"
+                        "파일이 손상된 것 같습니다.\r\n"
+                        "파일이 0.9.1 이전의 버전에서 생성된 경우 이런 오류가 발생할 수 있습니다.\r\n"
+                        "해당 버전 미만의 타이머에서 생성한 기록은 더이상 호환되지 않습니다.\r\n"
+                        "기록이 불러와지긴 하였으나 문제가 있을 수 있습니다.",
+                        L"오류",
+                        MB_OK | MB_ICONERROR
+                    );
+                    break;
+                }
+
                 default:
                 {
                     WCHAR wBuffer[256];
