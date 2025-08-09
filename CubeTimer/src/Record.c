@@ -242,6 +242,7 @@ static INT RcpLoadRecordFromFile(LPCWSTR lpszFilePath)
     /* 정리 및 반환 */
 
 cleanup:
+    RcpUpdateAoRecord();
     fclose(file);
     return returnValue;
 }
