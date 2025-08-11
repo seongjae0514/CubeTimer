@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Window.h"
 #include "Button.h"
+#include "Layout.h"
 
 /* Private function *****************************************/
 
@@ -54,7 +55,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
             /* 그리기 */
 
-            RdOnRender(hMemDC);
+            LoRenderAll(hMemDC);
 
             /* 백퍼버 정리 */
 

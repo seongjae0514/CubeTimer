@@ -22,6 +22,7 @@
     <ClCompile Include="src\Button.c" />
     <ClCompile Include="src\Dialog.c" />
     <ClCompile Include="src\IoHandler.c" />
+    <ClCompile Include="src\Layout.c" />
     <ClCompile Include="src\Main.c" />
     <ClCompile Include="src\Message.c" />
     <ClCompile Include="src\Record.c" />
@@ -36,6 +37,7 @@
     <ClInclude Include="include\Defs.h" />
     <ClInclude Include="include\Dialog.h" />
     <ClInclude Include="include\IoHandler.h" />
+    <ClInclude Include="include\Layout.h" />
     <ClInclude Include="include\Message.h" />
     <ClInclude Include="include\Record.h" />
     <ClInclude Include="include\Renderer.h" />

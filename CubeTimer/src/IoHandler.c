@@ -349,7 +349,7 @@ BOOL IoHandleMouseWheel(WPARAM wParam, LPARAM lParam)
 {
     INT count = GET_WHEEL_DELTA_WPARAM(wParam) / 120;
 
-    if (count > 0)
+    /*if (count > 0)
     {
         for (UINT i = 0; i < count; i++)
         {
@@ -362,7 +362,7 @@ BOOL IoHandleMouseWheel(WPARAM wParam, LPARAM lParam)
         {
             RdScrollRecord(TRUE, WndGetMainWindowHandle());
         }
-    }
+    }*/
 
     WndRepaintMainWindow();
 

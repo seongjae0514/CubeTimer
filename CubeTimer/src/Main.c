@@ -9,6 +9,7 @@
 #include "IoHandler.h"
 #include "Dialog.h"
 #include "Button.h"
+#include "Layout.h"
 
 INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
                     _In_opt_ HINSTANCE hPrevInstance,
@@ -28,7 +29,7 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
 	INITIALIZE_DEBUG_STREAM();
 
     TmInitializeTimer();
-    RdInitializeRenderer(60, 18);
+    LoInitialize();
     IoInitializeIoHandler();
     ScInitializeScramble();
     RcInitialize();
@@ -46,10 +47,12 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
     /* 정리 및 반환 */
 
     TmUninitializeTimer();
-    RdUninitializeRenderer();
+    LoUninitialize();
     IoUninitializeIoHandler();
     ScUninitializeScramble();
     RcUninitialize();
+    DlUninitializeDialog();
+    BtnUninitializeButton();
 
     PRINT_DEBUG_MEMORY_CHECK();
 
