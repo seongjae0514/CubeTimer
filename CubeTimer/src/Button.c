@@ -1,144 +1,158 @@
 #include "Debug.h"
 
 #include <Windows.h>
+
 #include "Button.h"
 #include "Window.h"
 
-/* Defs ********************************************************************************/
+/* Defines *****************************************************************/
 
-#define BUTTON_WIDTH  150
-#define BUTTON_HEIGHT 20
+typedef struct tagButtonStruct {
+	RECT     rect;
+	LPCWSTR  lpszText;
+	BOOL     bHovered;
+} ButtonStruct;
 
-/* Variables ***************************************************************************/
+/* Variables ***************************************************************/
 
-HWND InitButtonHandle;
-HWND PlusTwoButtonHandle;
-HWND LoadRecordButtonHandle;
-HWND SaveRecordButtonHandle;
+ButtonStruct Buttons[BUTTON_COUNT] = { 0 };
+LPCWSTR      ButtonTexts[BUTTON_COUNT] = { L"초기화", L"+2", L"불러오기", L"저장" };
 
-/* Private functions *******************************************************************/
+HBRUSH       hDefaultButtonBrush;
+HBRUSH       hHoverButtonBrush;
+HFONT        hButtonFont;
 
-HWND BtnpCreateButton(LPCWSTR lpszButtonText, UINT width, UINT height, INT x, INT y, WORD buttonEventId)
+/* Global functions ********************************************************/
+
+BOOL BtnInitialize(VOID)
 {
-	HWND hButton = CreateWindowExW(
-		0,
-		L"BUTTON",
-		lpszButtonText,
-		WS_CHILD | WS_VISIBLE | BS_FLAT | BS_PUSHBUTTON,
-		x, y,
-		width, height,
-		WndGetMainWindowHandle(),
-		(HMENU)(UINT_PTR)buttonEventId,
-		GetModuleHandleW(NULL),
-		NULL
-	);
-
-	return hButton;
-}
-
-BOOL BtnpMoveButton(HWND hButton, INT x, INT y, UINT width, UINT height, BOOL bRepaint)
-{
-	return MoveWindow(hButton, x, y, width, height, bRepaint);
-}
-
-/* Global functions ********************************************************************/
-
-BOOL BtnInitializeButton(VOID)
-{
-	RECT windowRect;
-	WndGetWindowRect(&windowRect);
-
-	InitButtonHandle = BtnpCreateButton(
-		L"초기화",
-		BUTTON_WIDTH, BUTTON_HEIGHT,
-		0, 0,
-		BUTTON_ID_INIT
-	);
-
-	if (!InitButtonHandle)
+	for (int i = 0; i < BUTTON_COUNT; i++)
 	{
-		return FALSE;
+		Buttons[i].lpszText = ButtonTexts[i];
+		Buttons[i].bHovered = FALSE;
 	}
 
-	PlusTwoButtonHandle = BtnpCreateButton(
-		L"+2",
-		BUTTON_WIDTH, BUTTON_HEIGHT,
+	hDefaultButtonBrush = CreateSolidBrush(RGB(230, 230, 230));
+	hHoverButtonBrush = CreateSolidBrush(RGB(200, 200, 200));
+	hButtonFont = CreateFontW(
+		18, 0,
 		0, 0,
-		BUTTON_ID_PLUSTWO
+		FW_MEDIUM,
+		FALSE, FALSE, FALSE,
+		DEFAULT_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+		DEFAULT_QUALITY,
+		DEFAULT_PITCH,
+		L"맑은 고딕"
 	);
 
-	if (!PlusTwoButtonHandle)
-	{
-		return FALSE;
-	}
-
-	LoadRecordButtonHandle = BtnpCreateButton(
-		L"기록 불러오기",
-		BUTTON_WIDTH, BUTTON_HEIGHT,
-		0, 0,
-		BUTTON_ID_LOADRECORD
-	);
-
-	if (!LoadRecordButtonHandle)
-	{
-		return FALSE;
-	}
-
-	SaveRecordButtonHandle = BtnpCreateButton(
-		L"기록 저장하기",
-		BUTTON_WIDTH, BUTTON_HEIGHT,
-		0, 0,
-		BUTTON_ID_SAVERECORD
-	);
-
-	if (!SaveRecordButtonHandle)
-	{
-		return FALSE;
-	}
-
-	BtnResetButtonPos();
+	BtnResetButtonDivisionPosition(0, 0);
 
 	return TRUE;
 }
 
-BOOL BtnUninitializeButton(VOID)
+BOOL BtnUninitialize(VOID)
 {
+	DeleteObject(hDefaultButtonBrush);
+	DeleteObject(hHoverButtonBrush);
+	DeleteObject(hButtonFont);
+
 	return TRUE;
 }
 
-BOOL BtnResetButtonPos(VOID)
+BOOL BtnGetButtonDivisionSize(LPSIZE lpSize)
 {
-	if (!InitButtonHandle || !PlusTwoButtonHandle)
+	if (!lpSize)
 	{
 		return FALSE;
 	}
 
-	RECT clientRect;
-	WndGetWindowRect(&clientRect);
+	lpSize->cy = BUTTON_HEIGHT;
+	lpSize->cx = BUTTON_WIDTH * BUTTON_COUNT + BUTTON_PADDING * (BUTTON_COUNT - 1);
+	return TRUE;
+}
 
-	BtnpMoveButton(
-		InitButtonHandle,
-		clientRect.right - BUTTON_WIDTH - 20, 20,
-		BUTTON_WIDTH, BUTTON_HEIGHT, TRUE
-	);
+BOOL BtnResetButtonDivisionPosition(INT x, INT y)
+{
+	Buttons[0].rect.left = x;
+	Buttons[0].rect.right = x + BUTTON_WIDTH;
+	Buttons[0].rect.top = y;
+	Buttons[0].rect.bottom = y + BUTTON_HEIGHT;
 
-	BtnpMoveButton(
-		PlusTwoButtonHandle,
-		clientRect.right - BUTTON_WIDTH - 20, 20 + (BUTTON_HEIGHT + 10) * 1,
-		BUTTON_WIDTH, BUTTON_HEIGHT, TRUE
-	);
+	for (int i = 1; i < BUTTON_COUNT; i++)
+	{
+		Buttons[i].rect.left = Buttons[i - 1].rect.right + BUTTON_PADDING;
+		Buttons[i].rect.right = Buttons[i].rect.left + BUTTON_WIDTH;
+		Buttons[i].rect.top = y;
+		Buttons[i].rect.bottom = y + BUTTON_HEIGHT;
+	}
 
-	BtnpMoveButton(
-		SaveRecordButtonHandle,
-		clientRect.right - BUTTON_WIDTH - 20, 20 + (BUTTON_HEIGHT + 10) * 2,
-		BUTTON_WIDTH, BUTTON_HEIGHT, TRUE
-	);
+	return TRUE;
+}
 
-	BtnpMoveButton(
-		LoadRecordButtonHandle,
-		clientRect.right - BUTTON_WIDTH - 20, 20 + (BUTTON_HEIGHT + 10) * 3,
-		BUTTON_WIDTH, BUTTON_HEIGHT, TRUE
-	);
+BOOL BtnResetMousePosition(LPPOINT lpMousePointer)
+{
+	if (!lpMousePointer)
+	{
+		return FALSE;
+	}
+
+	for (int i = 0; i < BUTTON_COUNT; i++)
+	{
+		Buttons[i].bHovered = PtInRect(&(Buttons[i].rect), *lpMousePointer);
+	}
+
+	return TRUE;
+}
+
+BOOL BtnClick(LPPOINT lpMousePointer)
+{
+	for (UINT i = 0; i < BUTTON_COUNT; i++)
+	{
+		if (Buttons[i].bHovered)
+		{
+			PostMessageW(WndGetMainWindowHandle(), WM_USER_BUTTON_CLICKED, (WPARAM)i, 0);
+			break;
+		}
+	}
+	return TRUE;
+}
+
+BOOL BtnRenderButtons(HDC hDestDC)
+{
+	HPEN hOldPen = SelectObject(hDestDC, GetStockObject(NULL_PEN));
+	HBRUSH hOldBrush = SelectObject(hDestDC, hDefaultButtonBrush);
+	HFONT hOldFont = SelectObject(hDestDC, hButtonFont);
+	INT oldBkMode = SetBkMode(hDestDC, TRANSPARENT);
+
+	for (UINT i = 0; i < BUTTON_COUNT; i++)
+	{
+		if (Buttons[i].bHovered)
+		{
+			SelectObject(hDestDC, hHoverButtonBrush);
+		}
+		else
+		{
+			SelectObject(hDestDC, hDefaultButtonBrush);
+		}
+
+		RECT rect = Buttons[i].rect;
+		RoundRect(hDestDC, rect.left, rect.top, rect.right, rect.bottom, 20, 20);
+
+		SIZE size;
+		GetTextExtentPoint32W(hDestDC, Buttons[i].lpszText, lstrlenW(Buttons[i].lpszText), &size);
+
+		INT x, y;
+		x = (rect.right - rect.left - size.cx) / 2 + rect.left;
+		y = (rect.bottom - rect.top - size.cy) / 2 + rect.top;
+
+		TextOutW(hDestDC, x, y, Buttons[i].lpszText, lstrlenW(Buttons[i].lpszText));
+	}
+
+	SelectObject(hDestDC, hOldPen);
+	SelectObject(hDestDC, hOldBrush);
+	SelectObject(hDestDC, hOldFont);
+	SetBkMode(hDestDC, oldBkMode);
 
 	return TRUE;
 }

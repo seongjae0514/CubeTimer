@@ -73,7 +73,13 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
         case WM_SIZE:
         {
             WndRepaintMainWindow();
-            BtnResetButtonPos();
+            return 0;
+        }
+
+        case WM_USER_BUTTON_CLICKED:
+        {
+            IoHandleButtonPress(wParam);
+            WndRepaintMainWindow();
             return 0;
         }
 
@@ -91,6 +97,27 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
             return 0;
         }
 
+        case WM_MOUSEMOVE:
+        {
+            POINT pt = {
+                .x = LOWORD(lParam),
+                .y = HIWORD(lParam)
+            };
+            LoResetMousePosition(&pt);
+            WndRepaintMainWindow();
+            return 0;
+        }
+
+        case WM_LBUTTONDOWN:
+        {
+            POINT pt = {
+                .x = LOWORD(lParam),
+                .y = HIWORD(lParam)
+            };
+            LoMouseClick(&pt);
+            WndRepaintMainWindow();
+            return 0;
+        }
     }
 
     return DefWindowProcW(hWnd, uMsg, wParam, lParam);

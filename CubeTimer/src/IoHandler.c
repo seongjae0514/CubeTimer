@@ -179,6 +179,7 @@ BOOL IoHandleButtonPress(WPARAM wParam)
             if (index < 1)
             {
                 MessageBoxW(WndGetMainWindowHandle(), L"입력값이 잘못되었습니다", L"오류", MB_OK | MB_ICONERROR);
+                return FALSE;
             }
 
             if (!RcTogglePlusTwo(index - 1))

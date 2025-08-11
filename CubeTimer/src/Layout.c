@@ -10,6 +10,7 @@
 #include "Record.h"
 #include "Window.h"
 #include "Scramble.h"
+#include "Button.h"
 
 /* Varialbles ************************************************************/
 
@@ -228,6 +229,8 @@ BOOL LoInitialize(VOID)
 		return FALSE;
 	}
 
+	BtnInitialize();
+
 	return TRUE;
 }
 
@@ -236,6 +239,8 @@ BOOL LoUninitialize(VOID)
 	DeleteObject(TimerFontHandle);
 	DeleteObject(ScrambleFontHandle);
 	DeleteObject(RecordFontHandle);
+
+	BtnUninitialize();
 	
 	return TRUE;
 }
@@ -256,26 +261,30 @@ BOOL LoRenderAll(HDC hDestDC)
 
 	LopPaintRecords(hDestDC, 20, 20);
 
-	/* 타이머와 스크램블 */
+	/* 타이머, 스크램블, 버튼 */
 
 	INT  timerX,    timerY;
 	INT  scrambleX, scrambleY;
-	SIZE timerSize, scrambleSize;
+	INT  buttonX,   buttonY;
+	SIZE timerSize, scrambleSize, buttonSize;
 
 	// 정보 얻기
 
 	LopGetTimerSize(hDestDC, &timerSize, time);
 	LopGetScrambleSize(hDestDC, &scrambleSize, wScramble);
+	BtnGetButtonDivisionSize(&buttonSize);
 
 	// Width 가로 정렬
 
 	timerX = (windowRect.right - timerSize.cx) / 2;
 	scrambleX = (windowRect.right - scrambleSize.cx) / 2;
+	buttonX = (windowRect.right - buttonSize.cx) / 2;
 
 	// Height 가로 정렬
 
-	timerY = (windowRect.bottom - (timerSize.cy + scrambleSize.cy))    / 2;
-	scrambleY = (windowRect.bottom - (timerSize.cy + scrambleSize.cy)) / 2 + timerSize.cy;
+	timerY = (windowRect.bottom - (timerSize.cy + scrambleSize.cy + buttonSize.cy + 10))    / 2;
+	scrambleY = (windowRect.bottom - (timerSize.cy + scrambleSize.cy + buttonSize.cy + 10)) / 2 + timerSize.cy;
+	buttonY = (windowRect.bottom - (timerSize.cy + scrambleSize.cy + buttonSize.cy + 10)) / 2 + timerSize.cy + scrambleSize.cy + 10;
 
 	// 타이머 상태에 따라 타이머 색 정하기
 
@@ -297,11 +306,28 @@ BOOL LoRenderAll(HDC hDestDC)
 		timerColor = RGB(0, 0, 0);
 	}
 
-	// 타이머와 스크램블 그리기
+	// 타이머, 스크램블, 버튼 그리기
 
 	LopPaintTimer(hDestDC, timerColor, timerX, timerY, time);
 	LopPaintScramble(hDestDC, scrambleX, scrambleY, wScramble);
 
+	BtnResetButtonDivisionPosition(buttonX, buttonY);
+	BtnRenderButtons(hDestDC);
 
 	return TRUE;
+}
+
+BOOL LoResetWindowSize(VOID)
+{
+	return TRUE;
+}
+
+BOOL LoResetMousePosition(LPPOINT lpMousePointer)
+{
+	return BtnResetMousePosition(lpMousePointer);
+}
+
+BOOL LoMouseClick(LPPOINT lpMousePointer)
+{
+	return BtnClick(lpMousePointer);
 }

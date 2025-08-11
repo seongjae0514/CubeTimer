@@ -34,7 +34,6 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
     ScInitializeScramble();
     RcInitialize();
 	DlInitializeDialog();
-	BtnInitializeButton();
 
     // 첫 번째 스크램블 생성
     ScGenerateScramble(SC_CUBE_33, 15);
@@ -52,7 +51,6 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
     ScUninitializeScramble();
     RcUninitialize();
     DlUninitializeDialog();
-    BtnUninitializeButton();
 
     PRINT_DEBUG_MEMORY_CHECK();
 
