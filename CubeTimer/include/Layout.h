@@ -4,6 +4,9 @@
 #include <Windows.h>
 #include "Button.h"
 
+#define DEFAULT_RECORD_Y 20
+#define DEFAULT_RECORD_X 20
+
 /**
  * @brief 모듈을 초기화합니다.
  * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
@@ -39,5 +42,11 @@ BOOL LoResetMousePosition(LPPOINT lpMousePointer);
  * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
  */
 BOOL LoMouseClick(LPPOINT lpMousePointer);
+
+/**
+ * @brief 기록들이 그려질 위치를 스크롤합니다.
+ * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
+ */
+BOOL LoScrollRecords(BOOL bUpScroll);
 
 #endif

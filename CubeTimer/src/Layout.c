@@ -18,6 +18,8 @@ static HFONT TimerFontHandle;
 static HFONT RecordFontHandle;
 static HFONT ScrambleFontHandle;
 
+static INT   RecordScrollPx;
+
 /* Private functions *****************************************************/
 
 static inline BOOL LopPaintTimer(HDC hDestDC, COLORREF textColor, INT textX, INT textY, MillisecTime time)
@@ -114,6 +116,7 @@ static inline BOOL LopGetScrambleSize(HDC hDestDC, LPSIZE lpSize, LPCWSTR lpszSc
 	HFONT hOldFont = SelectObject(hDestDC, ScrambleFontHandle);
 	BOOL ret = GetTextExtentPoint32W(hDestDC, lpszScramble, lstrlenW(lpszScramble), lpSize);
 	SelectObject(hDestDC, hOldFont);
+	return TRUE;
 }
 
 static inline BOOL LopGetRecordsRect(HDC hDestDC, INT x, INT y, LPRECT lpRect)
@@ -156,35 +159,19 @@ static inline BOOL LopGetRecordsRect(HDC hDestDC, INT x, INT y, LPRECT lpRect)
 	lpRect->left = x;
 	lpRect->top = y;
 	lpRect->right = siz.cx + x;
-	lpRect->bottom = siz.cy + y;
-
-	/* 그 이후 나머지 계산 */
-
-	for (UINT i = 1; i < recordCount; i++)
-	{
-		record = RcGetRecordStructAddress(i);
-		StringCchPrintfW(
-			wBuffer, _countof(wBuffer),
-			L"(1) %llu.%02llu | %llu.%02llu | %llu.%02llu | %s",
-			record->record / 1000, record->record % 1000,
-			record->ao5 / 1000, record->ao5 % 1000,
-			record->ao12 / 1000, record->ao12 % 1000,
-			record->scramble
-		);
-
-		GetTextExtentPoint32W(hDestDC, wBuffer, lstrlenW(wBuffer), &siz);
-
-		if (siz.cx + x > lpRect->right)
-		{
-			lpRect->right = siz.cx + x;
-		}
-
-		lpRect->bottom += siz.cy;
-	}
+	lpRect->bottom = siz.cy * recordCount + y;
 
 	SelectObject(hDestDC, RecordFontHandle);
 
 	return TRUE;
+}
+
+BOOL LopIsRectContact(LPRECT lpRect1, LPRECT lpRect2)
+{
+	return !(lpRect1->right  <= lpRect2->left  ||
+			 lpRect1->left   >= lpRect2->right ||
+			 lpRect1->bottom <= lpRect2->top   ||
+			 lpRect1->top    >= lpRect2->bottom);
 }
 
 /* Global functions ******************************************************/
@@ -229,6 +216,8 @@ BOOL LoInitialize(VOID)
 		return FALSE;
 	}
 
+	RecordScrollPx = 0;
+
 	BtnInitialize();
 
 	return TRUE;
@@ -259,7 +248,7 @@ BOOL LoRenderAll(HDC hDestDC)
 
 	/* 기록들 */
 
-	LopPaintRecords(hDestDC, 20, 20);
+	LopPaintRecords(hDestDC, DEFAULT_RECORD_X, DEFAULT_RECORD_Y + RecordScrollPx);
 
 	/* 타이머, 스크램블, 버튼 */
 
@@ -330,4 +319,28 @@ BOOL LoResetMousePosition(LPPOINT lpMousePointer)
 BOOL LoMouseClick(LPPOINT lpMousePointer)
 {
 	return BtnClick(lpMousePointer);
+}
+
+BOOL LoScrollRecords(BOOL bUpScroll)
+{
+	RECT recordRect;
+	RECT windowRect;
+	HDC  hWndDC;
+		
+	hWndDC = GetDC(WndGetMainWindowHandle());
+	LopGetRecordsRect(hWndDC, DEFAULT_RECORD_X, DEFAULT_RECORD_Y + RecordScrollPx + (bUpScroll ? 20 : -20), &recordRect);
+	ReleaseDC(WndGetMainWindowHandle(), hWndDC);
+	
+	WndGetWindowRect(&windowRect);
+
+	if (LopIsRectContact(&recordRect, &windowRect))
+	{
+		RecordScrollPx += bUpScroll ? 20 : -20;
+	}
+	else
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }
