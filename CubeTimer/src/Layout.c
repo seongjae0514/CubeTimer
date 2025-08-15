@@ -58,7 +58,7 @@ static inline BOOL LopPaintRecords(HDC hDestDC, INT startX, INT startY)
 	UINT recordsCount = RcGetRecordCount();
 	RECT windowRect;
 
-	GetClientRect(WndGetMainWindowHandle(), &windowRect);
+	WndGetWindowRect(&windowRect);
 
 	for (UINT i = 0; i < recordsCount; i++)
 	{
@@ -323,6 +323,11 @@ BOOL LoMouseClick(LPPOINT lpMousePointer)
 
 BOOL LoScrollRecords(BOOL bUpScroll)
 {
+	if (!RcGetRecordCount())
+	{
+		return FALSE;
+	}
+
 	RECT recordRect;
 	RECT windowRect;
 	HDC  hWndDC;
