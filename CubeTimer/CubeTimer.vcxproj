@@ -25,6 +25,7 @@
     <ClCompile Include="src\Layout.c" />
     <ClCompile Include="src\Main.c" />
     <ClCompile Include="src\Message.c" />
+    <ClCompile Include="src\Option.c" />
     <ClCompile Include="src\Record.c" />
     <ClCompile Include="src\Renderer.c" />
     <ClCompile Include="src\Scramble.c" />
@@ -39,6 +40,7 @@
     <ClInclude Include="include\IoHandler.h" />
     <ClInclude Include="include\Layout.h" />
     <ClInclude Include="include\Message.h" />
+    <ClInclude Include="include\Option.h" />
     <ClInclude Include="include\Record.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Scramble.h" />

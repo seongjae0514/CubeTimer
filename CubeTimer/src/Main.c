@@ -10,6 +10,7 @@
 #include "Dialog.h"
 #include "Button.h"
 #include "Layout.h"
+#include "Option.h"
 
 INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
                     _In_opt_ HINSTANCE hPrevInstance,
@@ -34,6 +35,7 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
     ScInitializeScramble();
     RcInitialize();
 	DlInitializeDialog();
+    OptInitialize();
 
     // 첫 번째 스크램블 생성
     ScGenerateScramble(SC_CUBE_33, 15);
