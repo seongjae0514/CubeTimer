@@ -1,12 +1,13 @@
 #ifndef TIMER_RESOURCE_H
 #define TIMER_RESOURCE_H
 
+#define IDI_ICON1             100
+
 #define IDD_INPUTDLG          101
 #define IDC_INPUTDLG_STATIC   1001
 #define IDC_INPUTDLG_EDIT     1002
 #define IDC_INPUTDLG_OK       1003
 #define IDC_INPUTDLG_CANCEL   1004
-#define IDI_ICON1             201
 
 #define IDD_OPTIONDLG         102
 #define IDC_OPTIONDLG_STATIC1 1001
@@ -17,5 +18,11 @@
 #define IDC_OPTIONDLG_COMBO   1006
 #define IDC_OPTIONDLG_OK      1007
 #define IDC_OPTIONDLG_CANCEL  1008
+
+#define IDM_MAINMENU 103
+#define IDM_INFO     1001
+#define IDM_SAVE     1002
+#define IDM_LOAD     1003
+#define IDM_END      1004
 
 #endif

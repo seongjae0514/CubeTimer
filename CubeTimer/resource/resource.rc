@@ -42,3 +42,20 @@ BEGIN
     PUSHBUTTON "OK",IDC_OPTIONDLG_OK,152,223,50,14
     PUSHBUTTON "Cancel",IDC_OPTIONDLG_CANCEL,207,223,50,14
 END
+
+/////////////////////////////////////////////////////////////////////////////
+// Menu
+//
+IDM_MAINMENU MENU
+BEGIN
+    POPUP "파일(&F)"
+    BEGIN
+        MENUITEM "끝내기(&X)",   IDM_END
+        MENUITEM "저장(&S)",     IDM_SAVE
+        MENUITEM "불러오기(&L)", IDM_LOAD
+    END
+    POPUP "도움말(&H)"
+    BEGIN
+        MENUITEM "정보(&I)",     IDM_INFO
+    END
+END

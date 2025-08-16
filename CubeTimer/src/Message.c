@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "Button.h"
 #include "Layout.h"
+#include "Resource.h"
 
 /* Private function *****************************************/
 
@@ -85,9 +86,11 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
         case WM_COMMAND:
         {
-            SetFocus(hWnd);
-            IoHandleButtonPress(wParam);
-            WndRepaintMainWindow();
+            if (LOWORD(wParam) >= IDM_INFO && LOWORD(wParam) <= IDM_END)
+            {
+                IoHandleMenuClick(LOWORD(wParam));
+            }
+
             return 0;
         }
 

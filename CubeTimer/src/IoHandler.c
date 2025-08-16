@@ -9,6 +9,7 @@
 #include "Dialog.h"
 #include "Layout.h"
 #include "Option.h"
+#include "Resource.h"
 
 /* Global varialbes *************************************************************/
 
@@ -47,6 +48,199 @@ static BOOL IopKillTimer(VOID)
         RepaintTimerId = 0;
         return TRUE;
     }
+}
+
+static BOOL IopLoadFromFile(VOID)
+{
+    WCHAR wBuffer[MAX_PATH] = { 0 };
+    BOOL dlRet = DlShowOpenFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file (*.ctr)\0*.ctr\0All files\0*.*\0");
+
+    if (!dlRet)
+    {
+        return TRUE;
+    }
+
+    INT ret = RcLoadRecordFromFile(wBuffer);
+
+    switch (ret)
+    {
+        case 0:
+        {
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                L"불러오기 성공", L"알림",
+                MB_OK | MB_ICONINFORMATION
+            );
+            break;
+        }
+        case EACCES:
+        {
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                L"파일 열기를 실패했습니다. 권한이 부족합니다.",
+                L"오류",
+                MB_OK | MB_ICONERROR
+            );
+            break;
+        }
+        case RECORD_FILE_ERROR_INVALID_FILE_TYPE:
+        {
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                L"불러오기를 실패했습니다. \r\n올바른 큐브 타이머 기록 파일 (.ctr) 이 아닙니다. \r\n파일이 손상되었을 수 있습니다.",
+                L"오류",
+                MB_OK | MB_ICONERROR
+            );
+            break;
+        }
+        case RECORD_ERROR_ALLOCATION_FAILED:
+        {
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                L"메모리 할당을 실패했습니다. \r\n메모리가 손상되었거나 파일이 잘못되었을 수 있습니다.",
+                L"오류",
+                MB_OK | MB_ICONERROR
+            );
+            break;
+        }
+        case RECORD_ERROR_ADD_RECORD_FAILED:
+        {
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                L"기록 추가를 실패했습니다. \r\n메모리가 손상되었거나 파일이 잘못되었을 수 있습니다.",
+                L"오류",
+                MB_OK | MB_ICONERROR
+            );
+            break;
+        }
+        case RECORD_FILE_ERROR_VALIDATION_CODE_NOT_EQUAL:
+        {
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                L"기록 파일이 올바른 큐브 타이머 기록 파일 (*.ctr) 이 아닙니다.\r\n"
+                "파일이 손상된 것 같습니다.\r\n"
+                "파일이 0.9.1 이전의 버전에서 생성된 경우 이런 오류가 발생할 수 있습니다.\r\n"
+                "해당 버전 미만의 타이머에서 생성한 기록은 더이상 호환되지 않습니다.\r\n"
+                "기록이 불러와지긴 하였으나 문제가 있을 수 있습니다.",
+                L"오류",
+                MB_OK | MB_ICONERROR
+            );
+            break;
+        }
+        default:
+        {
+            WCHAR wBuffer[256];
+            wsprintfW(wBuffer, L"파일 열기를 실패했습니다. 알 수 없는 오류가 발생했습니다. 오류 코드: %d", ret);
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                wBuffer,
+                L"오류",
+                MB_ICONERROR | MB_OK
+            );
+            return FALSE;
+        }
+    }
+}
+
+static BOOL IopSaveToFile(VOID)
+{
+    WCHAR wBuffer[MAX_PATH] = { 0 };
+    BOOL dlRet = DlShowSaveFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file (*.ctr)\0*.ctr\0All files\0*.*\0");
+
+    if (!dlRet)
+    {
+        return TRUE;
+    }
+
+    INT ret = RcSaveRecordToFile(wBuffer);
+
+    switch (ret)
+    {
+        case 0:
+        {
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                L"저장 성공", L"알림",
+                MB_OK | MB_ICONINFORMATION
+            );
+            break;
+        }
+        case EACCES:
+        {
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                L"저장을 실패했습니다. 권한이 부족합니다.",
+                L"오류",
+                MB_OK | MB_ICONERROR
+            );
+            break;
+        }
+        default:
+        {
+            WCHAR wBuffer[256];
+            wsprintfW(wBuffer, L"저장을 실패했습니다. 알 수 없는 오류가 발생했습니다. 오류 코드: %d", ret);
+            MessageBoxW(
+                WndGetMainWindowHandle(),
+                wBuffer,
+                L"오류",
+                MB_ICONERROR | MB_OK
+            );
+            break;
+        }
+    }
+    return TRUE;
+}
+
+BOOL IopResetTimer(VOID)
+{
+    TmUninitializeTimer();
+    RcUninitialize();
+    LoUninitialize();
+    TmInitializeTimer();
+    RcInitialize();
+    LoInitialize();
+    return TRUE;
+}
+
+BOOL IopPlusTwo(VOID)
+{
+    WCHAR wBuffer[INPUT_DIALOG_MAX_INPUT_SIZE];
+
+    BOOL ret = DlShowInputDialog(
+        WndGetMainWindowHandle(),
+        L"입력",
+        L"몇 번째 기록에 +2를 하시겠습니까?",
+        wBuffer
+    );
+
+    if (!ret)
+    {
+        return TRUE;
+    }
+
+    INT index = _wtoi(wBuffer);
+
+    if (index < 1)
+    {
+        MessageBoxW(WndGetMainWindowHandle(), L"입력값이 잘못되었습니다", L"오류", MB_OK | MB_ICONERROR);
+        return FALSE;
+    }
+
+    if (!RcTogglePlusTwo(index - 1))
+    {
+        MessageBoxW(WndGetMainWindowHandle(), L"입력값이 잘못되었습니다.", L"오류", MB_OK | MB_ICONERROR);
+    }
+
+    WndRepaintMainWindow();
+    return TRUE;
+}
+
+BOOL IopOption(VOID)
+{
+    OptSetOptions(WndGetMainWindowHandle());
+    LoUninitialize();
+    LoInitialize();
+    return TRUE;
 }
 
 /* Global functions *************************************************************/
@@ -150,208 +344,31 @@ BOOL IoHandleButtonPress(WPARAM wParam)
         /* 초기화 버튼 눌림 */
         case BUTTON_ID_INIT:
         {
-            TmUninitializeTimer();
-			RcUninitialize();
-            LoUninitialize();
-            TmInitializeTimer();
-			RcInitialize();
-            LoInitialize();
-            return TRUE;
+            return IopResetTimer();
         }
 
         /* +2 버튼 눌림 */
         case BUTTON_ID_PLUSTWO:
         {
-            WCHAR wBuffer[INPUT_DIALOG_MAX_INPUT_SIZE];
-
-            BOOL ret = DlShowInputDialog(
-                WndGetMainWindowHandle(),
-                L"입력",
-                L"몇 번째 기록에 +2를 하시겠습니까?",
-                wBuffer
-            );
-
-            if (!ret)
-            {
-                return TRUE;
-            }
-
-            INT index = _wtoi(wBuffer);
-
-            if (index < 1)
-            {
-                MessageBoxW(WndGetMainWindowHandle(), L"입력값이 잘못되었습니다", L"오류", MB_OK | MB_ICONERROR);
-                return FALSE;
-            }
-
-            if (!RcTogglePlusTwo(index - 1))
-            {
-                MessageBoxW(WndGetMainWindowHandle(), L"입력값이 잘못되었습니다.", L"오류", MB_OK | MB_ICONERROR);
-            }
-
-            WndRepaintMainWindow();
-            return TRUE;
+            return IopPlusTwo();
         }
 
         /* 기록 저장 버튼 눌림 */
         case BUTTON_ID_SAVERECORD:
         {
-            WCHAR wBuffer[MAX_PATH] = { 0 };
-            BOOL dlRet = DlShowSaveFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file (*.ctr)\0*.ctr\0All files\0*.*\0");
-
-            if (!dlRet)
-            {
-                return TRUE;
-            }
-
-            INT ret = RcSaveRecordToFile(wBuffer);
-
-            switch (ret)
-            {
-                case 0:
-                {
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        L"저장 성공", L"알림",
-                        MB_OK | MB_ICONINFORMATION
-                    );
-                    break;
-                }
-
-                case EACCES:
-                {
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        L"저장을 실패했습니다. 권한이 부족합니다.",
-                        L"오류",
-                        MB_OK | MB_ICONERROR
-                    );
-                    break;
-                }
-
-                default:
-                {
-                    WCHAR wBuffer[256];
-                    wsprintfW(wBuffer, L"저장을 실패했습니다. 알 수 없는 오류가 발생했습니다. 오류 코드: %d", ret);
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        wBuffer,
-                        L"오류",
-                        MB_ICONERROR | MB_OK
-                    );
-                    break;
-                }
-            }
-            return TRUE;
+            return IopSaveToFile();
         }
 
         /* 기록 불러오기 버튼 눌림 */
         case BUTTON_ID_LOADRECORD:
         {
-            WCHAR wBuffer[MAX_PATH] = { 0 };
-            BOOL dlRet = DlShowOpenFileDialog(WndGetMainWindowHandle(), wBuffer, _countof(wBuffer), L"Cube timer record file (*.ctr)\0*.ctr\0All files\0*.*\0");
-
-            if (!dlRet)
-            {
-                return TRUE;
-            }
-
-            INT ret = RcLoadRecordFromFile(wBuffer);
-
-            switch (ret)
-            {
-                case 0:
-                {
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        L"불러오기 성공", L"알림",
-                        MB_OK | MB_ICONINFORMATION
-                    );
-                    break;
-                }
-
-                case EACCES:
-                {
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        L"파일 열기를 실패했습니다. 권한이 부족합니다.",
-                        L"오류",
-                        MB_OK | MB_ICONERROR
-                    );
-                    break;
-                }
-
-                case RECORD_FILE_ERROR_INVALID_FILE_TYPE:
-                {
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        L"불러오기를 실패했습니다. \r\n올바른 큐브 타이머 기록 파일 (.ctr) 이 아닙니다. \r\n파일이 손상되었을 수 있습니다.",
-                        L"오류",
-                        MB_OK | MB_ICONERROR
-                    );
-                    break;
-                }
-
-                case RECORD_ERROR_ALLOCATION_FAILED:
-                {
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        L"메모리 할당을 실패했습니다. \r\n메모리가 손상되었거나 파일이 잘못되었을 수 있습니다.",
-                        L"오류",
-                        MB_OK | MB_ICONERROR
-                    );
-                    break;
-                }
-
-                case RECORD_ERROR_ADD_RECORD_FAILED:
-                {
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        L"기록 추가를 실패했습니다. \r\n메모리가 손상되었거나 파일이 잘못되었을 수 있습니다.",
-                        L"오류",
-                        MB_OK | MB_ICONERROR
-                    );
-                    break;
-                }
-
-                case RECORD_FILE_ERROR_VALIDATION_CODE_NOT_EQUAL:
-                {
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        L"기록 파일이 올바른 큐브 타이머 기록 파일 (*.ctr) 이 아닙니다.\r\n"
-                        "파일이 손상된 것 같습니다.\r\n"
-                        "파일이 0.9.1 이전의 버전에서 생성된 경우 이런 오류가 발생할 수 있습니다.\r\n"
-                        "해당 버전 미만의 타이머에서 생성한 기록은 더이상 호환되지 않습니다.\r\n"
-                        "기록이 불러와지긴 하였으나 문제가 있을 수 있습니다.",
-                        L"오류",
-                        MB_OK | MB_ICONERROR
-                    );
-                    break;
-                }
-
-                default:
-                {
-                    WCHAR wBuffer[256];
-                    wsprintfW(wBuffer, L"파일 열기를 실패했습니다. 알 수 없는 오류가 발생했습니다. 오류 코드: %d", ret);
-                    MessageBoxW(
-                        WndGetMainWindowHandle(),
-                        wBuffer,
-                        L"오류",
-                        MB_ICONERROR | MB_OK
-                    );
-                    break;
-                }
-            }
-            return TRUE;
+            return IopLoadFromFile();
         }
 
         /* 설정 버튼 눌림 */
         case BUTTON_ID_OPTION_CHANGE:
         {
-            OptSetOptions(WndGetMainWindowHandle());
-            LoUninitialize();
-            LoInitialize();
-            return TRUE;
+            return IopOption();
         }
     }
     return FALSE;
@@ -369,4 +386,28 @@ BOOL IoHandleMouseWheel(WPARAM wParam, LPARAM lParam)
 
     WndRepaintMainWindow();
     return TRUE;
+}
+
+BOOL IoHandleMenuClick(WORD id)
+{
+    switch (id)
+    {
+        case IDM_INFO:
+        {
+            return MessageBoxW(WndGetMainWindowHandle(), L"CubeTimer v0.12.0", L"정보", MB_OK | MB_ICONINFORMATION);
+        }
+        case IDM_LOAD:
+        {
+            return IopLoadFromFile();
+        }
+        case IDM_SAVE:
+        {
+            return IopSaveToFile();
+        }
+        case IDM_END:
+        {
+            return PostMessageW(WndGetMainWindowHandle(), WM_CLOSE, 0, 0);
+        }
+    }
+    return FALSE;
 }

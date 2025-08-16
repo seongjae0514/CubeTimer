@@ -39,4 +39,6 @@ extern BOOL IoHandleButtonPress(WPARAM wParam);
  */
 extern BOOL IoHandleMouseWheel(WPARAM wParam, LPARAM lParam);
 
+extern BOOL IoHandleMenuClick(WORD id);
+
 #endif

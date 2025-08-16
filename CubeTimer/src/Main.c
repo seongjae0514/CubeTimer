@@ -11,6 +11,7 @@
 #include "Button.h"
 #include "Layout.h"
 #include "Option.h"
+#include "Resource.h"
 
 INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
                     _In_opt_ HINSTANCE hPrevInstance,
@@ -24,6 +25,11 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
         MessageBoxW(NULL, L"윈도우 생성을 실패했습니다.", L"오류", MB_OK | MB_ICONERROR);
         return -1;
     }
+
+    /* 메뉴 초기화 */
+
+    HMENU hMenu = LoadMenuW(hInstance, MAKEINTRESOURCE(IDM_MAINMENU));
+    SetMenu(WndGetMainWindowHandle(), hMenu);
 
     /* 모듈 초기화 */
 
