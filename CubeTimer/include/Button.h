@@ -4,12 +4,13 @@
 #include <Windows.h>
 #include "Defs.h"
 
-#define BUTTON_ID_INIT       0
-#define BUTTON_ID_PLUSTWO    1
-#define BUTTON_ID_LOADRECORD 2
-#define BUTTON_ID_SAVERECORD 3
+#define BUTTON_ID_INIT          0
+#define BUTTON_ID_PLUSTWO       1
+#define BUTTON_ID_LOADRECORD    2
+#define BUTTON_ID_SAVERECORD    3
+#define BUTTON_ID_OPTION_CHANGE 4
 
-#define BUTTON_COUNT         4
+#define BUTTON_COUNT            5
 
 #define BUTTON_WIDTH   80
 #define BUTTON_HEIGHT  30

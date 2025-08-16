@@ -146,12 +146,9 @@ BOOL OptGetKeyValue(OptionKey key, UINT_PTR* pValue)
 
 BOOL OptSetOptions(HWND hwndParent)
 {
-	return DialogBoxParamW(
-		GetModuleHandleW(NULL),
-		MAKEINTRESOURCE(IDD_OPTIONDLG),
-		hwndParent,
-		OptpDialogProc,
-		0
-	) ? TRUE : FALSE;
+	return (BOOL)DialogBoxParamW(GetModuleHandleW(NULL),
+								 MAKEINTRESOURCE(IDD_OPTIONDLG),
+								 hwndParent,
+								 OptpDialogProc,
+								 0);
 }
-

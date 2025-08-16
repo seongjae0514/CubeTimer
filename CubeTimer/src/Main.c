@@ -29,13 +29,13 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
 
 	INITIALIZE_DEBUG_STREAM();
 
+    OptInitialize();
     TmInitializeTimer();
     LoInitialize();
     IoInitializeIoHandler();
     ScInitializeScramble();
     RcInitialize();
 	DlInitializeDialog();
-    OptInitialize();
 
     // 첫 번째 스크램블 생성
     ScGenerateScramble(SC_CUBE_33, 15);

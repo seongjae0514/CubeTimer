@@ -8,6 +8,7 @@
 #include "Button.h"
 #include "Dialog.h"
 #include "Layout.h"
+#include "Option.h"
 
 /* Global varialbes *************************************************************/
 
@@ -343,6 +344,15 @@ BOOL IoHandleButtonPress(WPARAM wParam)
             }
             return TRUE;
         }
+
+        /* 설정 버튼 눌림 */
+        case BUTTON_ID_OPTION_CHANGE:
+        {
+            OptSetOptions(WndGetMainWindowHandle());
+            LoUninitialize();
+            LoInitialize();
+            return TRUE;
+        }
     }
     return FALSE;
 }
@@ -356,7 +366,7 @@ BOOL IoHandleMouseWheel(WPARAM wParam, LPARAM lParam)
     {
         LoScrollRecords(bUpScroll);
     }
-    
+
     WndRepaintMainWindow();
     return TRUE;
 }

@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "Scramble.h"
 #include "Button.h"
+#include "Option.h"
 
 /* Varialbles ************************************************************/
 
@@ -178,8 +179,11 @@ BOOL LopIsRectContact(LPRECT lpRect1, LPRECT lpRect2)
 
 BOOL LoInitialize(VOID)
 {
+	UINT_PTR value;
+
+	OptGetKeyValue(OPTION_KEY_TIMER_SIZE, &value);
 	TimerFontHandle = CreateFontW(
-		80, 0,
+		(INT)value, 0,
 		0, 0,
 		FW_BOLD,
 		FALSE, FALSE, FALSE,
@@ -200,8 +204,9 @@ BOOL LoInitialize(VOID)
 		L"¸¼Àº °íµñ"
 	);
 
+	OptGetKeyValue(OPTION_KEY_RECORD_SIZE, &value);
 	RecordFontHandle = CreateFontW(
-		21, 0,
+		(INT)value, 0,
 		0, 0,
 		FW_NORMAL,
 		FALSE, FALSE, FALSE,

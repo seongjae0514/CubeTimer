@@ -16,7 +16,7 @@ typedef struct tagButtonStruct {
 /* Variables ***************************************************************/
 
 ButtonStruct Buttons[BUTTON_COUNT] = { 0 };
-LPCWSTR      ButtonTexts[BUTTON_COUNT] = { L"초기화", L"+2", L"불러오기", L"저장" };
+LPCWSTR      ButtonTexts[] = { L"초기화", L"+2", L"불러오기", L"저장", L"설정" };
 
 HBRUSH       hDefaultButtonBrush;
 HBRUSH       hHoverButtonBrush;
