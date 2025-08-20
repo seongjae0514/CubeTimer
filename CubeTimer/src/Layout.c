@@ -26,7 +26,7 @@ static INT   RecordScrollPx;
 static inline BOOL LopPaintTimer(HDC hDestDC, COLORREF textColor, INT textX, INT textY, MillisecTime time)
 {
 	COLORREF oldTextColor = SetTextColor(hDestDC, textColor);
-	HFONT    hOldFont = SelectObject(hDestDC, TimerFontHandle);
+	HFONT    hOldFont     = SelectObject(hDestDC, TimerFontHandle);
 
 	WCHAR wBuffer[256];
 	StringCchPrintfW(
@@ -46,7 +46,7 @@ static inline BOOL LopPaintTimer(HDC hDestDC, COLORREF textColor, INT textX, INT
 static inline BOOL LopPaintScramble(HDC hDestDC, INT textX, INT textY, LPCWSTR lpszScramble)
 {
 	HFONT hOldFont = SelectObject(hDestDC, ScrambleFontHandle);
-	BOOL ret = TextOutW(hDestDC, textX, textY, lpszScramble, lstrlenW(lpszScramble));
+	BOOL  ret      = TextOutW(hDestDC, textX, textY, lpszScramble, lstrlenW(lpszScramble));
 	SelectObject(hDestDC, hOldFont);
 	return ret;
 }
@@ -55,7 +55,8 @@ static inline BOOL LopPaintRecords(HDC hDestDC, INT startX, INT startY)
 {
 	HFONT hOldFont = SelectObject(hDestDC, RecordFontHandle);
 
-	INT x = startX, y = startY;
+	INT  x            = startX;
+	INT  y            = startY;
 	UINT recordsCount = RcGetRecordCount();
 	RECT windowRect;
 
@@ -115,7 +116,7 @@ static inline BOOL LopGetTimerSize(HDC hDestDC, LPSIZE lpSize, MillisecTime time
 static inline BOOL LopGetScrambleSize(HDC hDestDC, LPSIZE lpSize, LPCWSTR lpszScramble)
 {
 	HFONT hOldFont = SelectObject(hDestDC, ScrambleFontHandle);
-	BOOL ret = GetTextExtentPoint32W(hDestDC, lpszScramble, lstrlenW(lpszScramble), lpSize);
+	BOOL  ret      = GetTextExtentPoint32W(hDestDC, lpszScramble, lstrlenW(lpszScramble), lpSize);
 	SelectObject(hDestDC, hOldFont);
 	return TRUE;
 }
@@ -133,16 +134,15 @@ static inline BOOL LopGetRecordsRect(HDC hDestDC, INT x, INT y, LPRECT lpRect)
 
 	/* 지역변수 */
 	
-	UINT recordCount = RcGetRecordCount();
-	const RecordStruct* record = RcGetRecordStructAddress(0);
-	WCHAR wBuffer[256];
-	SIZE  siz;
+	UINT                recordCount = RcGetRecordCount();
+	const RecordStruct* record      = RcGetRecordStructAddress(0);
+	WCHAR               wBuffer[256];
+	SIZE                siz;
 
 	if (!recordCount)
 	{
 		return FALSE;
 	}
-
 
 	/* 첫 번째 기록 먼저 계산 */
 
@@ -157,9 +157,9 @@ static inline BOOL LopGetRecordsRect(HDC hDestDC, INT x, INT y, LPRECT lpRect)
 
 	GetTextExtentPoint32W(hDestDC, wBuffer, lstrlenW(wBuffer), &siz);
 
-	lpRect->left = x;
-	lpRect->top = y;
-	lpRect->right = siz.cx + x;
+	lpRect->left   = x;
+	lpRect->top    = y;
+	lpRect->right  = siz.cx + x;
 	lpRect->bottom = siz.cy * recordCount + y;
 
 	SelectObject(hDestDC, RecordFontHandle);
@@ -270,15 +270,15 @@ BOOL LoRenderAll(HDC hDestDC)
 
 	// Width 가로 정렬
 
-	timerX = (windowRect.right - timerSize.cx) / 2;
+	timerX    = (windowRect.right - timerSize.cx) / 2;
 	scrambleX = (windowRect.right - scrambleSize.cx) / 2;
-	buttonX = (windowRect.right - buttonSize.cx) / 2;
+	buttonX   = (windowRect.right - buttonSize.cx) / 2;
 
 	// Height 가로 정렬
 
-	timerY = (windowRect.bottom - (timerSize.cy + scrambleSize.cy + buttonSize.cy + 10))    / 2;
+	timerY    = (windowRect.bottom - (timerSize.cy + scrambleSize.cy + buttonSize.cy + 10))    / 2;
 	scrambleY = (windowRect.bottom - (timerSize.cy + scrambleSize.cy + buttonSize.cy + 10)) / 2 + timerSize.cy;
-	buttonY = (windowRect.bottom - (timerSize.cy + scrambleSize.cy + buttonSize.cy + 10)) / 2 + timerSize.cy + scrambleSize.cy + 10;
+	buttonY   = (windowRect.bottom - (timerSize.cy + scrambleSize.cy + buttonSize.cy + 10)) / 2 + timerSize.cy + scrambleSize.cy + 10;
 
 	// 타이머 상태에 따라 타이머 색 정하기
 

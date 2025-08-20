@@ -1,9 +1,10 @@
 #include "Debug.h"
+
 #include <Windows.h>
+
 #include "Window.h"
 #include "Timer.h"
 #include "Message.h"
-#include "Renderer.h"
 #include "Scramble.h"
 #include "Record.h"
 #include "IoHandler.h"
@@ -26,22 +27,17 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
         return -1;
     }
 
-    /* 메뉴 초기화 */
-
-    HMENU hMenu = LoadMenuW(hInstance, MAKEINTRESOURCE(IDM_MAINMENU));
-    SetMenu(WndGetMainWindowHandle(), hMenu);
-
     /* 모듈 초기화 */
 
 	INITIALIZE_DEBUG_STREAM();
 
     OptInitialize();
-    TmInitializeTimer();
+    TmInitialize();
     LoInitialize();
-    IoInitializeIoHandler();
-    ScInitializeScramble();
+    IoInitialize();
+    ScInitialize();
     RcInitialize();
-	DlInitializeDialog();
+	DlInitialize();
 
     // 첫 번째 스크램블 생성
     ScGenerateScramble(SC_CUBE_33, 15);
@@ -53,12 +49,12 @@ INT WINAPI wWinMain(_In_     HINSTANCE hInstance,
 
     /* 정리 및 반환 */
 
-    TmUninitializeTimer();
+    TmUninitialize();
     LoUninitialize();
-    IoUninitializeIoHandler();
-    ScUninitializeScramble();
+    IoUninitialize();
+    ScUninitialize();
     RcUninitialize();
-    DlUninitializeDialog();
+    DlUninitialize();
 
     PRINT_DEBUG_MEMORY_CHECK();
 

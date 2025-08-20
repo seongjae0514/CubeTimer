@@ -1,9 +1,11 @@
 #include "Debug.h"
-#include "Scramble.h"
+
 #include <Windows.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+#include "Scramble.h"
 
 /* Global variables *************************************************************/
 
@@ -17,7 +19,7 @@ BOOL ScpScrambleToString33(LPWSTR lpBuffer, SIZE_T bufferSize)
 {
     /* 지역변수 선언 */
 
-    SIZE_T          bufferIndex = 0;          // 버퍼 크기 오버플로우 방지용 인덱스 카운트
+    SIZE_T bufferIndex = 0;          // 버퍼 크기 오버플로우 방지용 인덱스 카운트
 
     /* 버퍼와 스크램블 배열 순회하면서 저장 */
 
@@ -107,14 +109,14 @@ BOOL ScpScrambleToString33(LPWSTR lpBuffer, SIZE_T bufferSize)
 
 /* Global functinos *************************************************************/
 
-BOOL ScInitializeScramble(VOID)
+BOOL ScInitialize(VOID)
 {
     srand((unsigned int)time(NULL));
     Scramble = NULL;
     return TRUE;
 }
 
-VOID ScUninitializeScramble(VOID)
+VOID ScUninitialize(VOID)
 {
     ScDeleteScramble();
 }

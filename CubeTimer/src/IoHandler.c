@@ -1,8 +1,10 @@
 #include "Debug.h"
+
 #include <Windows.h>
+
+#include "IoHandler.h"
 #include "Window.h"
 #include "Timer.h"
-#include "IoHandler.h"
 #include "Record.h"
 #include "Scramble.h"
 #include "Button.h"
@@ -193,10 +195,10 @@ static BOOL IopSaveToFile(VOID)
 
 BOOL IopResetTimer(VOID)
 {
-    TmUninitializeTimer();
+    TmUninitialize();
     RcUninitialize();
     LoUninitialize();
-    TmInitializeTimer();
+    TmInitialize();
     RcInitialize();
     LoInitialize();
     return TRUE;
@@ -245,12 +247,12 @@ BOOL IopOption(VOID)
 
 /* Global functions *************************************************************/
 
-BOOL IoInitializeIoHandler(VOID)
+BOOL IoInitialize(VOID)
 {
     return TRUE;
 }
 
-BOOL IoUninitializeIoHandler(VOID)
+BOOL IoUninitialize(VOID)
 {
     IopKillTimer();
     return TRUE;
@@ -386,28 +388,4 @@ BOOL IoHandleMouseWheel(WPARAM wParam, LPARAM lParam)
 
     WndRepaintMainWindow();
     return TRUE;
-}
-
-BOOL IoHandleMenuClick(WORD id)
-{
-    switch (id)
-    {
-        case IDM_INFO:
-        {
-            return MessageBoxW(WndGetMainWindowHandle(), L"CubeTimer v0.12.0", L"Á¤º¸", MB_OK | MB_ICONINFORMATION);
-        }
-        case IDM_LOAD:
-        {
-            return IopLoadFromFile();
-        }
-        case IDM_SAVE:
-        {
-            return IopSaveToFile();
-        }
-        case IDM_END:
-        {
-            return PostMessageW(WndGetMainWindowHandle(), WM_CLOSE, 0, 0);
-        }
-    }
-    return FALSE;
 }

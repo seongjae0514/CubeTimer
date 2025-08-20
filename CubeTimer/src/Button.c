@@ -16,7 +16,7 @@ typedef struct tagButtonStruct {
 /* Variables ***************************************************************/
 
 ButtonStruct Buttons[BUTTON_COUNT] = { 0 };
-LPCWSTR      ButtonTexts[] = { L"초기화", L"+2", L"불러오기", L"저장", L"설정" };
+LPCWSTR      ButtonTexts[]         = { L"초기화", L"+2", L"불러오기", L"저장", L"설정" };
 
 HBRUSH       hDefaultButtonBrush;
 HBRUSH       hHoverButtonBrush;
@@ -33,8 +33,8 @@ BOOL BtnInitialize(VOID)
 	}
 
 	hDefaultButtonBrush = CreateSolidBrush(RGB(230, 230, 230));
-	hHoverButtonBrush = CreateSolidBrush(RGB(200, 200, 200));
-	hButtonFont = CreateFontW(
+	hHoverButtonBrush   = CreateSolidBrush(RGB(200, 200, 200));
+	hButtonFont         = CreateFontW(
 		18, 0,
 		0, 0,
 		FW_MEDIUM,
@@ -74,9 +74,9 @@ BOOL BtnGetButtonDivisionSize(LPSIZE lpSize)
 
 BOOL BtnResetButtonDivisionPosition(INT x, INT y)
 {
-	Buttons[0].rect.left = x;
-	Buttons[0].rect.right = x + BUTTON_WIDTH;
-	Buttons[0].rect.top = y;
+	Buttons[0].rect.left   = x;
+	Buttons[0].rect.right  = x + BUTTON_WIDTH;
+	Buttons[0].rect.top    = y;
 	Buttons[0].rect.bottom = y + BUTTON_HEIGHT;
 
 	for (int i = 1; i < BUTTON_COUNT; i++)
@@ -120,10 +120,10 @@ BOOL BtnClick(LPPOINT lpMousePointer)
 
 BOOL BtnRenderButtons(HDC hDestDC)
 {
-	HPEN hOldPen = SelectObject(hDestDC, GetStockObject(NULL_PEN));
+	HPEN hOldPen     = SelectObject(hDestDC, GetStockObject(NULL_PEN));
 	HBRUSH hOldBrush = SelectObject(hDestDC, hDefaultButtonBrush);
-	HFONT hOldFont = SelectObject(hDestDC, hButtonFont);
-	INT oldBkMode = SetBkMode(hDestDC, TRANSPARENT);
+	HFONT hOldFont   = SelectObject(hDestDC, hButtonFont);
+	INT oldBkMode    = SetBkMode(hDestDC, TRANSPARENT);
 
 	for (UINT i = 0; i < BUTTON_COUNT; i++)
 	{

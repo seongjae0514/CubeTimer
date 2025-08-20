@@ -1,9 +1,10 @@
 #include "Debug.h"
 
 #include <Windows.h>
+#include <StrSafe.h>
+
 #include "Option.h"
 #include "Resource.h"
-#include "StrSafe.h"
 
 /* Variables ****************************************/
 

@@ -27,7 +27,6 @@
     <ClCompile Include="src\Message.c" />
     <ClCompile Include="src\Option.c" />
     <ClCompile Include="src\Record.c" />
-    <ClCompile Include="src\Renderer.c" />
     <ClCompile Include="src\Scramble.c" />
     <ClCompile Include="src\Timer.c" />
     <ClCompile Include="src\Window.c" />
@@ -42,7 +41,6 @@
     <ClInclude Include="include\Message.h" />
     <ClInclude Include="include\Option.h" />
     <ClInclude Include="include\Record.h" />
-    <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Scramble.h" />
     <ClInclude Include="include\Timer.h" />
     <ClInclude Include="include\Window.h" />

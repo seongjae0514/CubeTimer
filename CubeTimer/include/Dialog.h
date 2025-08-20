@@ -9,13 +9,13 @@
  * @모듈을 초기화합니다.
  * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
  */
-extern BOOL DlInitializeDialog(VOID);
+extern BOOL DlInitialize(VOID);
 
 /**
  * @모듈을 초기화합니다.
  * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
  */
-extern BOOL DlUninitializeDialog(VOID);
+extern BOOL DlUninitialize(VOID);
 
 /**
  * @brief 인풋 다이얼로그를 표시합니다.

@@ -1,7 +1,9 @@
 #include "Debug.h"
+
+#include <Windows.h>
+
 #include "Message.h"
 #include "IoHandler.h"
-#include "Renderer.h"
 #include "Window.h"
 #include "Button.h"
 #include "Layout.h"
@@ -81,16 +83,6 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
         {
             IoHandleButtonPress(wParam);
             WndRepaintMainWindow();
-            return 0;
-        }
-
-        case WM_COMMAND:
-        {
-            if (LOWORD(wParam) >= IDM_INFO && LOWORD(wParam) <= IDM_END)
-            {
-                IoHandleMenuClick(LOWORD(wParam));
-            }
-
             return 0;
         }
 

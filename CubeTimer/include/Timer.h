@@ -17,13 +17,13 @@ typedef enum tagTimerStatus {
  * @brief 타이머 모듈을 초기화합니다.
  * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
  */
-extern BOOL TmInitializeTimer(VOID);
+extern BOOL TmInitialize(VOID);
 
 /**
  * @brief 타이머 모듈 초기화를 취소합니다.
  * @return 성공하면 TRUE, 실패하면 FALSE를 반환합니다.
  */
-extern BOOL TmUninitializeTimer(VOID);
+extern BOOL TmUninitialize(VOID);
 
 /**
  * @brief 트리거 함수입니다.

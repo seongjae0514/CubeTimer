@@ -1,5 +1,7 @@
 #include "Debug.h"
+
 #include <Windows.h>
+
 #include "Timer.h"
 
 /* Global variables *******************************************************/
@@ -26,7 +28,7 @@ ULONGLONG TmpGetTickCount(VOID)
 
 /* Global functions *******************************************************/
 
-BOOL TmInitializeTimer(VOID)
+BOOL TmInitialize(VOID)
 {
     StartTimeMs = 0;
     ElapsedTimeMs = 0;
@@ -34,7 +36,7 @@ BOOL TmInitializeTimer(VOID)
     return TmpInitializeTickCounter();
 }
 
-BOOL TmUninitializeTimer(VOID)
+BOOL TmUninitialize(VOID)
 {
     return TRUE;
 }

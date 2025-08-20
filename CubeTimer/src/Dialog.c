@@ -2,10 +2,9 @@
 
 #include <Windows.h>
 #include <commdlg.h>
+
 #include "Dialog.h"
 #include "resource.h"
-
-
 
 /* Variables **************************************************/
 
@@ -72,12 +71,12 @@ UINT_PTR DlpInputDialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 /* Global functions *******************************************/
 
-BOOL DlInitializeDialog(VOID)
+BOOL DlInitialize(VOID)
 {
 	return TRUE;
 }
 
-BOOL DlUninitializeDialog(VOID)
+BOOL DlUninitialize(VOID)
 {
 	return TRUE;
 }

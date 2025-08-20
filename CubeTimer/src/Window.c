@@ -1,5 +1,7 @@
 #include "Debug.h"
+
 #include <Windows.h>
+
 #include "Window.h"
 #include "Resource.h"
 

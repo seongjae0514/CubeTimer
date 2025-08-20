@@ -27,12 +27,12 @@ typedef struct tagScrambleStruct {
  * @brief Scramble 모듈을 초기화합니다.
  * @return 성공시 TRUE, 실패시 FALSE를 반환합니다.
  */
-extern BOOL ScInitializeScramble(VOID);
+extern BOOL ScInitialize(VOID);
 
 /**
  * @brief Scramble 모듈의 초기화를 취소합니다. 모든 정리 작업을 자동으로 수행합니다.
  */
-extern VOID ScUninitializeScramble(VOID);
+extern VOID ScUninitialize(VOID);
 
 /**
  * @brief 스크램블을 생성합니다.
